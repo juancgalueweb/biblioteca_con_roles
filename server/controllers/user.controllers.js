@@ -6,8 +6,11 @@ const {
   generateOTP,
   mailTransport,
   generateEmailTemplate,
+  generatePasswordResetTemplate,
 } = require("../helpers/mailVerify");
 const { isValidObjectId } = require("mongoose");
+const ResetTokenModel = require("../models/resetToken.model");
+const { createRandomBytes } = require("../helpers/randomBytes");
 
 //Método para registrar un usuario
 module.exports.registerUser = async (req, res) => {
@@ -128,5 +131,49 @@ module.exports.verifyEmail = async (req, res) => {
       email: user.email,
       id: user._id,
     },
+  });
+};
+
+//Controlar para olvido de contraseña
+module.exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(401).json({ msg: "Email inválido", success: false });
+  }
+
+  const user = await UserModel.findOne({ email: email });
+  if (!user) {
+    return res
+      .status(401)
+      .json({ msg: "Usuario no encontrado", success: false });
+  }
+
+  const token = await ResetTokenModel.findOne({ owner: user._id });
+  if (token) {
+    return res.status(401).json({
+      msg: "Solo después de 1 hora puedes pedir otro token",
+      success: false,
+    });
+  }
+
+  const randomToken = await createRandomBytes();
+  const resetToken = new ResetTokenModel({
+    owner: user._id,
+    token: randomToken,
+  });
+  await resetToken.save();
+
+  mailTransport().sendMail({
+    from: "security@email.com",
+    to: user.email,
+    subject: "Reseteo de contraseña",
+    html: generatePasswordResetTemplate(
+      `http://localhost:8000/reset-password?token=${randomToken}&id=${user._id}`
+    ),
+  });
+
+  res.json({
+    success: true,
+    msg: "Se envía a su e-mail el link para resetear la contraseña",
   });
 };
