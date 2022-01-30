@@ -1,4 +1,3 @@
-const uniqueValidator = require("mongoose-unique-validator");
 const { Schema, model } = require("mongoose");
 
 const UserSchema = new Schema(
@@ -16,7 +15,6 @@ const UserSchema = new Schema(
     email: {
       type: String,
       required: [true, "El usuario requiere un e-mail válido"],
-      unique: [true, "El e-mail ya existe en la base de datos"],
       validate: {
         validator: (val) => /^([\w-\.]+@([\w-]+\.)+[\w-]+)?$/.test(val),
         message: "Por favor, ingrese un correo válido",
@@ -32,12 +30,14 @@ const UserSchema = new Schema(
       default: "basic",
       enum: ["basic", "admin"],
     },
+    verified: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
   { timestamps: true }
 );
-
-//Aplicar el plugin de uniqueValidator al UserSchema
-UserSchema.plugin(uniqueValidator, { message: "{PATH} debe ser único" });
 
 //Convertir el esquema en modelo y exportarlo
 const UserModel = model("UserModel", UserSchema);
