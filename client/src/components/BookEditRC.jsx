@@ -30,15 +30,45 @@ export const BookEditRC = ({ processSubmit, initialValues, titleButton }) => {
             name="validate_other"
             onFinish={processSubmit}
             initialValues={{
-              rating: initialValues.rating,
+              rating: initialValues.rating ? initialValues.rating : null,
               comment: initialValues.comment,
             }}
             onFinishFailed={onFinishFailed}
           >
-            <Form.Item name="rating" label="Valoración">
+            <Form.Item
+              name="rating"
+              label="Valoración"
+              rules={[
+                {
+                  required: true,
+                  message: "Debe seleccionar un rating",
+                },
+                {
+                  validator: (_, value) => {
+                    if (value > 0) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error("El rating no puede ser cero")
+                    );
+                  },
+                },
+              ]}
+            >
               <Rate allowHalf />
             </Form.Item>
-            <Form.Item name={["comment"]}>
+            <Form.Item
+              name={["comment"]}
+              label="Comentario"
+              rules={[
+                {
+                  type: "string",
+                  required: true,
+                  message: "Debe ingresar un comentario",
+                },
+                { min: 10, message: "Mínimo 10 caracteres" },
+              ]}
+            >
               <Input.TextArea
                 placeholder="Deja un comentario al libro..."
                 showCount
