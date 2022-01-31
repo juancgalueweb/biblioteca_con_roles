@@ -209,7 +209,8 @@ export const UserFormAntd = (props) => {
                 required: true,
                 message: "Por favor, ingrese su contraseña",
               },
-              { min: 6, message: "Mínimo 6 caracteres" },
+              { min: 8, message: "Mínimo 8 caracteres" },
+              { max: 20, message: "Máximo 20 caracteres" },
             ]}
             hasFeedback
           >

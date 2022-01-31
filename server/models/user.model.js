@@ -5,12 +5,12 @@ const UserSchema = new Schema(
     firstName: {
       type: String,
       required: [true, "El usuario requiere un nombre"],
-      minlength: [3, "Mínimo 3 caracteres"],
+      minlength: [3, "El nombre debe ser mínimo de 3 caracteres"],
     },
     lastName: {
       type: String,
       required: [true, "El usuario requiere un apellido"],
-      minlength: [3, "Mínimo 3 caracteres"],
+      minlength: [3, "El apellido debe ser mínimo de 3 caracteres"],
     },
     email: {
       type: String,
@@ -23,7 +23,6 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: [true, "La contraseña es obligatoria"],
-      minlength: [6, "6 characters min"],
     },
     role: {
       type: String,

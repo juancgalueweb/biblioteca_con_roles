@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const verificationTokenSchema = new mongoose.Schema({
+const resetTokenSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "UserModel",
@@ -18,4 +18,4 @@ const verificationTokenSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("VerificationToken", verificationTokenSchema);
+module.exports = mongoose.model("ResetToken", resetTokenSchema);
