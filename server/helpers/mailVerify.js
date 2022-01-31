@@ -571,7 +571,7 @@ module.exports.generatePasswordResetTemplate = (url) => {
                                   <table border="0" cellpadding="0" cellspacing="0">
                                     <tbody>
                                       <tr>
-                                        <td> <a href=${url} target="_blank">reset password</a> </td>
+                                        <td> <a href=${url} target="_blank">resetear contraseña</a> </td>
                                       </tr>
                                     </tbody>
                                   </table>

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcryptjs = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 
 const resetTokenSchema = new mongoose.Schema({
   owner: {
@@ -20,14 +20,14 @@ const resetTokenSchema = new mongoose.Schema({
 
 resetTokenSchema.pre("save", async function (next) {
   if (this.isModified("token")) {
-    const hash = await bcryptjs.hash(this.token, 10);
+    const hash = await bcrypt.hash(this.token, 10);
     this.token = hash;
   }
   next();
 });
 
-resetTokenSchema.methods.compareToken = async function (token) {
-  const result = await bcryptjs.compareSync(token, this.token);
+resetTokenSchema.methods.compareToken = function (token) {
+  const result = bcrypt.compareSync(token, this.token);
   return result;
 };
 
