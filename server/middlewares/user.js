@@ -1,4 +1,5 @@
 const { isValidObjectId } = require("mongoose");
+const { comparePassOrToken } = require("../helpers/hashPassOrToken");
 const ResetTokenModel = require("../models/resetToken.model");
 const UserModel = require("../models/user.model");
 
@@ -36,7 +37,7 @@ module.exports.isResetTokenValid = async (req, res, next) => {
     });
   }
 
-  const isValid = await resetToken.compareToken(token);
+  const isValid = comparePassOrToken(token, resetToken.token);
   if (!isValid) {
     return res.status(401).json({
       msg: "Token para resetear contraseña respuesta no es válido",

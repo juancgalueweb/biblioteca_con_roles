@@ -11,6 +11,10 @@ const {
 const { isValidObjectId } = require("mongoose");
 const ResetTokenModel = require("../models/resetToken.model");
 const { createRandomBytes } = require("../helpers/randomBytes");
+const {
+  generateHashPassOrToken,
+  comparePassOrToken,
+} = require("../helpers/hashPassOrToken");
 
 //Método para registrar un usuario
 module.exports.registerUser = async (req, res) => {
@@ -33,15 +37,14 @@ module.exports.registerUser = async (req, res) => {
       });
     }
     //Encrypt password
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(newUser.password, salt);
-    newUser.password = hash;
+    newUser.password = await generateHashPassOrToken(newUser.password);
 
     const OTP = generateOTP();
+    const hastOTP = await generateHashPassOrToken(OTP);
 
     const verificationToken = new VerificationToken({
       owner: newUser._id,
-      token: OTP,
+      token: hastOTP,
     });
 
     await verificationToken.save();
@@ -65,11 +68,19 @@ module.exports.registerUser = async (req, res) => {
 module.exports.loginUser = async (req, res) => {
   try {
     const user = await UserModel.findOne({ email: req.body.email });
+    // Valida si el usuario existe
     if (!user) {
       return res.status(401).json({ success: false, msg: "Usuario no existe" });
     }
+    //Rechaza el login de un usuario válido pero con correo no verificado
+    if (!user.verified) {
+      return res
+        .status(401)
+        .json({ success: false, msg: "Su email no ha sido verificado" });
+    }
     const { _id, firstName, email, password, role } = user;
-    const validPassword = bcrypt.compareSync(req.body.password, password);
+    //Revisa si el password es válido, y de serlo, se le asigna un token que dura 24 horas, con el que podrá consultar las APIs
+    const validPassword = comparePassOrToken(req.body.password, password);
     if (validPassword) {
       const token = await genJWT(_id, firstName, email, role);
       return res.json({
@@ -120,7 +131,7 @@ module.exports.verifyEmail = async (req, res) => {
         .json({ msg: "Usuario no encontrado", success: false });
     }
 
-    const isMatched = await token.compareToken(otp);
+    const isMatched = comparePassOrToken(otp, token.token);
     if (!isMatched) {
       return res.status(401).json({ msg: "Token inválido", success: false });
     }
@@ -174,9 +185,10 @@ module.exports.forgotPassword = async (req, res) => {
     }
 
     const randomToken = await createRandomBytes();
+    const hashRandomToken = await generateHashPassOrToken(randomToken);
     const resetToken = new ResetTokenModel({
       owner: user._id,
-      token: randomToken,
+      token: hashRandomToken,
     });
     await resetToken.save();
 
@@ -210,7 +222,7 @@ module.exports.resetPassword = async (req, res) => {
         .json({ msg: "Usuario no encontrado", success: false });
     }
 
-    const isSamePassword = await bcrypt.compareSync(password, user.password);
+    const isSamePassword = comparePassOrToken(password, user.password);
     if (isSamePassword) {
       return res.status(401).json({
         msg: "La nueva contraseña no puede ser igual a la anterior",
@@ -226,11 +238,9 @@ module.exports.resetPassword = async (req, res) => {
     }
 
     //Encrypt new password
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(password, salt);
-    user.password = hash;
-    await user.save();
+    user.password = generateHashPassOrToken(password);
 
+    await user.save();
     await ResetTokenModel.findOneAndDelete({ owner: user._id });
 
     mailTransport().sendMail({
