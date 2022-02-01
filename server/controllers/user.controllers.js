@@ -1,6 +1,5 @@
 const UserModel = require("../models/user.model");
 const VerificationToken = require("../models/verificationToken.model");
-const bcrypt = require("bcryptjs");
 const { genJWT } = require("../helpers/jwt");
 const {
   generateOTP,
@@ -197,13 +196,13 @@ module.exports.forgotPassword = async (req, res) => {
       to: user.email,
       subject: "Reseteo de contraseña",
       html: generatePasswordResetTemplate(
-        `http://localhost:8000/api/auth/reset-password?token=${randomToken}&id=${user._id}`
+        `http://localhost:3000/reset-password?token=${randomToken}&id=${user._id}`
       ),
     });
 
     res.json({
       success: true,
-      msg: "Se envía a su e-mail el link para resetear la contraseña",
+      msg: "Se envió a su e-mail el link para resetear la contraseña",
     });
   } catch (err) {
     res.status(500).json({ errorMsg: err });

@@ -108,7 +108,7 @@ export const UserFormAntd = (props) => {
       console.log(err);
       Swal.fire({
         icon: "error",
-        title: "Oops... usario o contraseña incorrecta",
+        title: `${err.response.data.msg}`,
         confirmButtonText: "Lo revisaré!",
       });
     }
@@ -217,9 +217,10 @@ export const UserFormAntd = (props) => {
             {isLogin ? (
               <Input.Password
                 prefix={<LockOutlined className="site-form-item-icon" />}
+                placeholder="********"
               />
             ) : (
-              <Input.Password />
+              <Input.Password placeholder="********" />
             )}
           </Form.Item>
 
@@ -246,7 +247,7 @@ export const UserFormAntd = (props) => {
                 }),
               ]}
             >
-              <Input.Password />
+              <Input.Password placeholder="********" />
             </Form.Item>
           ) : null}
 
@@ -282,10 +283,19 @@ export const UserFormAntd = (props) => {
               <Input.Password placeholder="Ingrese el secreto para ser admin" />
             </Form.Item>
           ) : null}
+
           <Button type="primary" htmlType="submit" className="mb-3">
             {titleSubmitButton}
           </Button>
-          <br />
+
+          {isLogin ? (
+            <Form.Item>
+              <a className="login-form-forgot" href="/forgot-password">
+                Olvidé mi contraseña
+              </a>
+            </Form.Item>
+          ) : null}
+          {!isLogin ? <br /> : null}
           <Button onClick={handleOnClick}>
             Ir al {isLogin ? "registro" : "login"}
           </Button>

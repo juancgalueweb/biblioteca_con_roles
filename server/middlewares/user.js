@@ -40,7 +40,7 @@ module.exports.isResetTokenValid = async (req, res, next) => {
   const isValid = comparePassOrToken(token, resetToken.token);
   if (!isValid) {
     return res.status(401).json({
-      msg: "Token para resetear contraseña respuesta no es válido",
+      msg: "Token para resetear contraseña no es válido",
       success: false,
     });
   }

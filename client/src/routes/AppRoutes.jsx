@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { ForgotPassword } from "../components/ForgotPassword";
 import { NavbarMenu } from "../components/NavbarMenu";
+import { ResetPassword } from "../components/ResetPassword";
 import { AdminBooksMain } from "../views/AdminBooksMain";
 import { AdminNewEditScreen } from "../views/AdminNewEditScreen";
 import { HomeScreen } from "../views/HomeScreen";
@@ -18,6 +20,12 @@ export const AppRoutes = () => {
         </Route>
         <Route exact path="/register">
           <LoginRegisterScreen />
+        </Route>
+        <Route exact path="/forgot-password">
+          <ForgotPassword />
+        </Route>
+        <Route path="/reset-password">
+          <ResetPassword />
         </Route>
         <Route exact path="/admin/books">
           <AdminBooksMain />
