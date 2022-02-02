@@ -6,11 +6,12 @@ import { LoginContext } from "../contexts/LoginContext";
 import { UserContext } from "../contexts/UserContext";
 import Swal from "sweetalert2";
 import { axiosWithoutToken } from "../helpers/axios";
+import { EnrollUserContext } from "../contexts/EnrollUserContext";
 
 export const UserFormAntd = (props) => {
   const { titleSubmitButton } = props;
-
   const [askSecret, setAskSecret] = useState(false);
+  const { setEnrollUser } = useContext(EnrollUserContext);
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -49,35 +50,37 @@ export const UserFormAntd = (props) => {
   //Registro de usuario
   const registerUser = async (values) => {
     delete values["admin"];
-    console.log(values);
     try {
       if (values.secretPhrase) {
         delete values["secretPhrase"];
-        await axiosWithoutToken(
+        const adminData = await axiosWithoutToken(
           "auth/register",
           { ...values, role: "admin" },
           "POST"
         );
+        setEnrollUser(adminData.data);
       } else {
-        await axiosWithoutToken("auth/register", values, "POST");
-        // console.log(user.data);
-        Swal.fire({
-          icon: "success",
-          title: `<strong>${values.firstName}</strong> se registró exitosamente. Por favor, inicie sesión`,
-          showConfirmButton: true,
-          confirmButtonText: "Ok",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setIsLogin(true);
-            history.push("/login");
-          }
-        });
-        form.resetFields();
+        const basicData = await axiosWithoutToken(
+          "auth/register",
+          values,
+          "POST"
+        );
+        setEnrollUser(basicData.data);
       }
+      Swal.fire({
+        icon: "success",
+        title: `<strong>${values.firstName}</strong>, bienvenid@. Revise su inbox para validar su e-mail`,
+        showConfirmButton: true,
+        confirmButtonText: "Ok",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          history.push("/verify-email");
+        }
+      });
+      form.resetFields();
     } catch (err) {
       if (err?.response?.data) {
         const { data } = err.response;
-        console.log(data);
         Swal.fire({
           icon: "error",
           title: `${data.msg}`,

@@ -51,7 +51,7 @@ export const UserBooksMain = () => {
     } catch (err) {
       console.log("Error al consultar todos los libros");
       console.log("error", err);
-      if (err.response.status === 401) {
+      if (err?.response?.status === 401) {
         Swal.fire({
           icon: "error",
           title: "Su sesión ha expirado. Debe volver a iniciar sesión.",
