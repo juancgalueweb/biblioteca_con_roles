@@ -41,7 +41,6 @@ export const VerifyEmail = () => {
     } catch (err) {
       if (err?.response?.data) {
         const { data } = err.response;
-        // console.log(data);
         Swal.fire({
           icon: "error",
           title: `${data.msg}`,
