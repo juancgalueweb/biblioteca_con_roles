@@ -137,7 +137,7 @@ export const UserBooksContainer = () => {
       };
     }
   };
-  console.log("Probando la función", initialValuesAntd(initialData));
+  // console.log("Probando la función", initialValuesAntd(initialData));
   return (
     <>
       <Row justify="center">

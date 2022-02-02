@@ -88,7 +88,9 @@ module.exports.loginUser = async (req, res) => {
         role: role,
       });
     } else {
-      return res.status(401).json({ msg: "Contraseña incorrecta" });
+      return res
+        .status(401)
+        .json({ success: false, msg: "Contraseña incorrecta" });
     }
   } catch (err) {
     res.status(500).json({ success: false, msg: err });

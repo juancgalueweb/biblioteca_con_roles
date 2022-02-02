@@ -74,6 +74,7 @@ export const BookEditRC = ({ processSubmit, initialValues, titleButton }) => {
                 showCount
                 maxLength={400}
                 style={{ width: 600 }}
+                autoSize={{ minRows: 2 }}
               />
             </Form.Item>
             <Form.Item

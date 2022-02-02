@@ -201,6 +201,7 @@ export const UserBooksMain = () => {
     try {
       const data = await axiosWithToken(`cr/book/${record._id}`);
       setAllComments(data.data);
+      console.log("Lo que quiero ver", data.data);
     } catch (err) {
       console.log("Error al consultar todos los libros", err);
       if (err.response.status === 401) {
@@ -284,22 +285,28 @@ export const UserBooksMain = () => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Timeline>
-          {allComments?.comments?.map((comment) => (
-            <Timeline.Item key={uid()}>
-              <span>
-                <b> Comentario de {comment?.user?.firstName}:</b>
-              </span>
-              <br />
-              <Rate allowHalf disabled defaultValue={comment?.rating} />
-              <p>
-                "<em>{comment?.comment}</em>"
+        {allComments.length === 0 ? (
+          <p key={uid()}>
+            Aún no hay comentarios, sea el primer usuario en comentar 👏🏼
+          </p>
+        ) : (
+          <Timeline>
+            {allComments?.comments?.map((comment) => (
+              <Timeline.Item key={uid()}>
+                <span>
+                  <b> Comentario de {comment?.user?.firstName}:</b>
+                </span>
                 <br />
-                Publicado {moment(comment?.updatedAt).fromNow()}
-              </p>
-            </Timeline.Item>
-          ))}
-        </Timeline>
+                <Rate allowHalf disabled defaultValue={comment?.rating} />
+                <p>
+                  "<em>{comment?.comment}</em>"
+                  <br />
+                  Publicado {moment(comment?.updatedAt).fromNow()}
+                </p>
+              </Timeline.Item>
+            ))}
+          </Timeline>
+        )}
       </Modal>
     </Container>
   );

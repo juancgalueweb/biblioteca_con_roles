@@ -14,6 +14,6 @@ module.exports = (app) => {
   app.post("/api/auth/forgot-password", forgotPassword);
   app.post("/api/auth/reset-password", isResetTokenValid, resetPassword);
   app.get("/api/auth/verify-token", isResetTokenValid, (_, res) => {
-    res.json({ success: true });
+    res.json({ success: true, msg: "El token es válido" });
   });
 };

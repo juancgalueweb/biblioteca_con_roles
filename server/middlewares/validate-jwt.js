@@ -4,7 +4,7 @@ module.exports.validateJWT = (req, res, next) => {
   const token = req.header("x-token");
   if (!token) {
     return res.status(401).json({
-      ok: false,
+      success: false,
       msg: "No hay token en la petición",
     });
   }
@@ -20,7 +20,7 @@ module.exports.validateJWT = (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res.status(401).json({
-      ok: false,
+      success: false,
       msg: "Token no válido",
     });
   }

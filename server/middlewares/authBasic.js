@@ -3,7 +3,7 @@ module.exports.authBasic = (req, res, next) => {
     next();
   } else {
     return res.status(403).json({
-      ok: false,
+      success: false,
       msg: "Usuario no tiene el rol de usuario básico",
     });
   }
