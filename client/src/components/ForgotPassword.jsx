@@ -35,13 +35,12 @@ export const ForgotPassword = () => {
         title: `${user?.data?.msg}`,
         confirmButtonText: "Gracias!",
       });
-      console.log(user.data);
     } catch (error) {
       console.log(error.response.data);
       Swal.fire({
         icon: "error",
         title: `${error?.response?.data?.msg}`,
-        confirmButtonText: "Lo arreglaré!",
+        confirmButtonText: "Oh no!",
       });
     }
   };

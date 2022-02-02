@@ -74,7 +74,7 @@ module.exports.loginUser = async (req, res) => {
     if (!user.verified) {
       return res
         .status(401)
-        .json({ success: false, msg: "Su email no ha sido verificado" });
+        .json({ success: false, msg: "Su e-mail no ha sido verificado" });
     }
     const { _id, firstName, email, password, role } = user;
     //Revisa si el password es válido, y de serlo, se le asigna un token que dura 24 horas, con el que podrá consultar las APIs
@@ -145,7 +145,7 @@ module.exports.verifyEmail = async (req, res) => {
       from: "emailverification@email.com",
       to: user.email,
       subject: "Verificación exitosa",
-      html: "<h1>La verificación del email fue un éxito. Gracias.</h1>",
+      html: "<h1>La verificación del e-mail fue un éxito. Gracias.</h1>",
     });
     res.json({
       success: true,
@@ -166,7 +166,7 @@ module.exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
     if (!email) {
-      return res.status(401).json({ msg: "Email inválido", success: false });
+      return res.status(401).json({ msg: "E-mail inválido", success: false });
     }
 
     const user = await UserModel.findOne({ email: email });
