@@ -58,8 +58,7 @@ module.exports.registerUser = async (req, res) => {
 
     return res.json(newUser);
   } catch (err) {
-    const errorMsg = Object.values(err.errors).map((val) => val.message);
-    res.status(500).json(errorMsg);
+    res.status(500).json({ success: false, msg: err });
   }
 };
 
@@ -92,7 +91,7 @@ module.exports.loginUser = async (req, res) => {
       return res.status(401).json({ msg: "Contraseña incorrecta" });
     }
   } catch (err) {
-    res.status(403).json({ msg: "Credenciales inválidas", err });
+    res.status(500).json({ success: false, msg: err });
   }
 };
 
@@ -156,7 +155,7 @@ module.exports.verifyEmail = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ errorMsg: err });
+    res.status(500).json({ success: false, msg: err });
   }
 };
 
@@ -205,7 +204,7 @@ module.exports.forgotPassword = async (req, res) => {
       msg: "Se envió a su e-mail el link para resetear la contraseña",
     });
   } catch (err) {
-    res.status(500).json({ errorMsg: err });
+    res.status(500).json({ success: false, msg: err });
   }
 };
 
@@ -251,6 +250,6 @@ module.exports.resetPassword = async (req, res) => {
 
     res.json({ success: true, msg: "Reseteo de contraseña exitoso" });
   } catch (err) {
-    res.status(500).json({ errorMsg: err });
+    res.status(500).json({ success: false, msg: err });
   }
 };

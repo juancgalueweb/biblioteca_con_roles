@@ -48,7 +48,8 @@ export const UserFormAntd = (props) => {
 
   //Registro de usuario
   const registerUser = async (values) => {
-    // console.log("Values del registro", values);
+    delete values["admin"];
+    console.log(values);
     try {
       if (values.secretPhrase) {
         delete values["secretPhrase"];
@@ -58,29 +59,31 @@ export const UserFormAntd = (props) => {
           "POST"
         );
       } else {
-        axiosWithoutToken("auth/register", values, "POST");
+        await axiosWithoutToken("auth/register", values, "POST");
+        // console.log(user.data);
+        Swal.fire({
+          icon: "success",
+          title: `<strong>${values.firstName}</strong> se registró exitosamente. Por favor, inicie sesión`,
+          showConfirmButton: true,
+          confirmButtonText: "Ok",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setIsLogin(true);
+            history.push("/login");
+          }
+        });
+        form.resetFields();
       }
-      Swal.fire({
-        icon: "success",
-        title: `<strong>${values.firstName}</strong> se registró exitosamente. Por favor, inicie sesión`,
-        showConfirmButton: true,
-        confirmButtonText: "Ok",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          setIsLogin(true);
-          history.push("/login");
-        }
-      });
-      form.resetFields();
     } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        html: `<ul class="swal-list">${err.response.data.map(
-          (error) => `<li>${error}</li>`
-        )}</ul>`,
-        confirmButtonText: "Lo arreglaré!",
-      });
+      if (err?.response?.data) {
+        const { data } = err.response;
+        console.log(data);
+        Swal.fire({
+          icon: "error",
+          title: `${data.msg}`,
+          confirmButtonText: "Lo arreglaré!",
+        });
+      }
     }
   };
 
@@ -125,6 +128,7 @@ export const UserFormAntd = (props) => {
   };
 
   const onChange = (e) => {
+    console.log("Valor del checkbox", e.target.checked);
     e.target.checked === true && !isLogin
       ? setAskSecret(true)
       : setAskSecret(false);

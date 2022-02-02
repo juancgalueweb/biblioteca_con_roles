@@ -28,6 +28,7 @@ const UserSchema = new Schema(
       type: String,
       default: "basic",
       enum: ["basic", "admin"],
+      required: true,
     },
     verified: {
       type: Boolean,
