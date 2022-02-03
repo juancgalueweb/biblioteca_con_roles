@@ -6,12 +6,12 @@ import { LoginContext } from "../contexts/LoginContext";
 import { UserContext } from "../contexts/UserContext";
 import Swal from "sweetalert2";
 import { axiosWithoutToken } from "../helpers/axios";
-import { EnrollUserContext } from "../contexts/EnrollUserContext";
+// import { EnrollUserContext } from "../contexts/EnrollUserContext";
 
 export const UserFormAntd = (props) => {
   const { titleSubmitButton } = props;
   const [askSecret, setAskSecret] = useState(false);
-  const { setEnrollUser } = useContext(EnrollUserContext);
+  // const { setEnrollUser } = useContext(EnrollUserContext);
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -58,15 +58,31 @@ export const UserFormAntd = (props) => {
           { ...values, role: "admin" },
           "POST"
         );
-        setEnrollUser(adminData.data);
+        // setEnrollUser(adminData.data);
+        localStorage.setItem(
+          "validateEmail",
+          JSON.stringify({
+            userId: adminData.data.user?._id,
+            firstName: adminData.data.user?.firstName,
+            token: adminData.data.token,
+          })
+        );
       } else {
         const basicData = await axiosWithoutToken(
           "auth/register",
           values,
           "POST"
         );
-        setEnrollUser(basicData.data);
-        console.log(basicData.data);
+        // setEnrollUser(basicData.data);
+        // console.log(basicData.data);
+        localStorage.setItem(
+          "validateEmail",
+          JSON.stringify({
+            userId: basicData.data.user?._id,
+            firstName: basicData.data.user?.firstName,
+            token: basicData.data.token,
+          })
+        );
       }
       Swal.fire({
         icon: "success",

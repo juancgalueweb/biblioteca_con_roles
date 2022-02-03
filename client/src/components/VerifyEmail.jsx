@@ -3,7 +3,7 @@ import { Row, Col, Button } from "antd";
 import Container from "react-bootstrap/Container";
 import ReactPinField from "react-pin-field";
 import styles from "../scss/VerifyEmail.module.scss";
-import { EnrollUserContext } from "../contexts/EnrollUserContext";
+// import { EnrollUserContext } from "../contexts/EnrollUserContext";
 import { axiosWithoutToken } from "../helpers/axios";
 import { LoginContext } from "../contexts/LoginContext";
 import Swal from "sweetalert2";
@@ -12,16 +12,18 @@ import { useHistory } from "react-router-dom";
 export const VerifyEmail = () => {
   const [code, setCode] = useState("");
   const [, setCompleted] = useState(false);
-  const { enrollUser } = useContext(EnrollUserContext);
+  // const { enrollUser } = useContext(EnrollUserContext);
   const { setIsLogin } = useContext(LoginContext);
   const history = useHistory();
 
+  const storedData = JSON.parse(localStorage.getItem("validateEmail"));
+
   const dataToAxios = {
-    userId: enrollUser.user?._id,
+    userId: storedData?.userId,
     otp: code,
-    token: enrollUser.token,
+    token: storedData?.token,
   };
-  console.log("Data to axios", dataToAxios);
+  // console.log("Data to axios", dataToAxios);
 
   const validateEmail = async () => {
     try {
@@ -33,7 +35,7 @@ export const VerifyEmail = () => {
       if (isValidated.data.success) {
         Swal.fire({
           icon: "success",
-          title: `<strong>${enrollUser?.user?.firstName}</strong>, gracias por validar su e-mail`,
+          title: `<strong>${storedData?.firstName}</strong>, gracias por validar su e-mail`,
           showConfirmButton: true,
           confirmButtonText: "Ir al login",
         }).then((result) => {
@@ -42,6 +44,7 @@ export const VerifyEmail = () => {
             history.push("/login");
           }
         });
+        localStorage.removeItem("validateEmail");
       }
     } catch (err) {
       if (err?.response?.data) {
@@ -61,8 +64,8 @@ export const VerifyEmail = () => {
         <Col span={14} className="border rounded bg-light mx-auto pb-2 pt-4">
           <h2 className="text-center">Ingrese el pin para validar su e-mail</h2>
           <p className="lead fw-lighter m-4">
-            No se salga de esta ventana hasta que no verifique su e-mail, de lo
-            contrario no podrá volver a ingresar y deberá registrarse de nuevo.
+            Tendrá 10 minutos para validar su e-mail, de lo contrario tendrá que
+            solicitar otro PIN manualmente desde la ruta del Login.
           </p>
           <Row>
             <Col span={8}></Col>
