@@ -5,8 +5,9 @@ const { genJWT } = require("../helpers/jwt");
 const {
   generateOTP,
   mailTransport,
-  generateEmailTemplate,
   generatePasswordResetTemplate,
+  generateSendOTPTemplate,
+  generalEmailTemplate,
 } = require("../helpers/mailVerify");
 const { isValidObjectId } = require("mongoose");
 const {
@@ -44,7 +45,7 @@ module.exports.registerUser = async (req, res) => {
       from: "emailverification@email.com",
       to: newUser.email,
       subject: "Por favor, verifica tu correo electrónico",
-      html: generateEmailTemplate(OTP),
+      html: generateSendOTPTemplate(OTP),
     });
 
     //Hacemos un Hash del OTP y lo guardamos en JWT por 10 min
@@ -137,7 +138,10 @@ module.exports.verifyEmail = async (req, res) => {
       from: "emailverification@email.com",
       to: user.email,
       subject: "Verificación exitosa",
-      html: "<h1>La verificación del e-mail fue un éxito. Gracias.</h1>",
+      html: generalEmailTemplate(
+        `Muchas gracias, ${user.firstName}`,
+        "La verificación del e-mail fue un éxito."
+      ),
     });
     res.json({
       success: true,
@@ -219,7 +223,10 @@ module.exports.resetPassword = async (req, res) => {
       from: "security@email.com",
       to: user.email,
       subject: "Reseteo de contraseña exitoso",
-      html: "<h1>El reseteo de la contraseña fue exitoso, ahora puede iniciar sesión con la nueva contraseña.</h1>",
+      html: generalEmailTemplate(
+        `Todo está listo ${user.firstName}`,
+        "El reseteo de la contraseña fue exitoso, ahora puede iniciar sesión con la nueva contraseña."
+      ),
     });
 
     res.json({ success: true, msg: "Reseteo de contraseña exitoso" });
