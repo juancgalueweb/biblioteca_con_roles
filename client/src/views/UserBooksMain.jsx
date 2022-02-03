@@ -1,5 +1,3 @@
-//TODO: en el rating, indicar también con un número, la cantidad de comentarios, en caso de que tenga al menos 1
-
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "antd/dist/antd.css";
@@ -23,7 +21,7 @@ import { uid } from "../helpers/uniqueId";
 import { uniqueArrayData } from "../helpers/uniqueArrayData";
 import styles from "../scss/UserBooksMain.module.scss";
 import moment from "moment";
-import "moment/locale/es-us";
+import "moment/locale/es-mx";
 import { Container } from "react-bootstrap";
 
 const KEY = "biblioteca-app";
@@ -204,7 +202,7 @@ export const UserBooksMain = () => {
       console.log("Lo que quiero ver", data.data);
     } catch (err) {
       console.log("Error al consultar todos los libros", err);
-      if (err.response.status === 401) {
+      if (err.response?.status === 401) {
         Swal.fire({
           icon: "error",
           title: "Su sesión ha expirado. Debe volver a iniciar sesión.",
@@ -301,7 +299,7 @@ export const UserBooksMain = () => {
                 <p>
                   "<em>{comment?.comment}</em>"
                   <br />
-                  Publicado {moment(comment?.updatedAt).fromNow()}
+                  Publicado {moment(comment?.updatedAt).calendar()}
                 </p>
               </Timeline.Item>
             ))}
