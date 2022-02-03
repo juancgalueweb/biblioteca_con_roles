@@ -5,7 +5,7 @@ const {
   forgotPassword,
   resetPassword,
 } = require("../controllers/user.controllers");
-const { isResetTokenValid } = require("../middlewares/user");
+const { isResetTokenValid } = require("../middlewares/validateResetToken");
 
 module.exports = (app) => {
   app.post("/api/auth/register", registerUser);

@@ -1,7 +1,6 @@
 const { isValidObjectId } = require("mongoose");
-const { comparePassOrToken } = require("../helpers/hashPassOrToken");
-const ResetTokenModel = require("../models/resetToken.model");
 const UserModel = require("../models/user.model");
+const jwt = require("jsonwebtoken");
 
 module.exports.isResetTokenValid = async (req, res, next) => {
   // el query es el contenido de la ruta URL para resetar la contraseña
@@ -21,7 +20,6 @@ module.exports.isResetTokenValid = async (req, res, next) => {
   }
 
   const user = await UserModel.findById(id);
-
   if (!user) {
     return res.status(401).json({
       msg: "Usuario no encontrado",
@@ -29,22 +27,15 @@ module.exports.isResetTokenValid = async (req, res, next) => {
     });
   }
 
-  const resetToken = await ResetTokenModel.findOne({ owner: user._id });
-  if (!resetToken) {
+  try {
+    const jwtResponse = jwt.verify(token, process.env.SECRET_KEY);
+    req.user = jwtResponse.userId;
+  } catch (error) {
     return res.status(401).json({
-      msg: "Token de respuesta no encontrado",
       success: false,
+      msg: "Token inválido o expirado",
     });
   }
 
-  const isValid = comparePassOrToken(token, resetToken.token);
-  if (!isValid) {
-    return res.status(401).json({
-      msg: "Token para resetear contraseña no es válido",
-      success: false,
-    });
-  }
-
-  req.user = user;
   next();
 };

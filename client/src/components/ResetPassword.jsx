@@ -69,7 +69,7 @@ export const ResetPassword = () => {
         }, 2500);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
       Swal.fire({
         icon: "error",
         title: `${error.response.data.msg}`,

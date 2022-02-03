@@ -1,5 +1,6 @@
 const UserModel = require("../models/user.model");
 const VerificationToken = require("../models/verificationToken.model");
+const { jwtResetPass } = require("../helpers/jwtResetPass");
 const { genJWT } = require("../helpers/jwt");
 const {
   generateOTP,
@@ -8,8 +9,6 @@ const {
   generatePasswordResetTemplate,
 } = require("../helpers/mailVerify");
 const { isValidObjectId } = require("mongoose");
-const ResetTokenModel = require("../models/resetToken.model");
-const { createRandomBytes } = require("../helpers/randomBytes");
 const {
   generateHashPassOrToken,
   comparePassOrToken,
@@ -176,28 +175,14 @@ module.exports.forgotPassword = async (req, res) => {
         .json({ msg: "Usuario no encontrado", success: false });
     }
 
-    const token = await ResetTokenModel.findOne({ owner: user._id });
-    if (token) {
-      return res.status(401).json({
-        msg: "Solo después de 1 hora puedes pedir otro token",
-        success: false,
-      });
-    }
-
-    const randomToken = await createRandomBytes();
-    const hashRandomToken = await generateHashPassOrToken(randomToken);
-    const resetToken = new ResetTokenModel({
-      owner: user._id,
-      token: hashRandomToken,
-    });
-    await resetToken.save();
+    const jwtToken = await jwtResetPass(user._id);
 
     mailTransport().sendMail({
       from: "security@email.com",
       to: user.email,
       subject: "Reseteo de contraseña",
       html: generatePasswordResetTemplate(
-        `http://localhost:3000/reset-password?token=${randomToken}&id=${user._id}`
+        `http://localhost:3000/reset-password?token=${jwtToken}&id=${user._id}`
       ),
     });
 
@@ -215,7 +200,8 @@ module.exports.resetPassword = async (req, res) => {
   try {
     const { password } = req.body;
 
-    const user = await UserModel.findById(req.user._id);
+    //En el middleware le asigno a req.user la respuesta al verificar el token con jwt, que es el id del usuario que pidió cambio de contraseña
+    const user = await UserModel.findById(req.user);
     if (!user) {
       return res
         .status(401)
@@ -239,9 +225,7 @@ module.exports.resetPassword = async (req, res) => {
 
     //Encrypt new password
     user.password = generateHashPassOrToken(password);
-
     await user.save();
-    await ResetTokenModel.findOneAndDelete({ owner: user._id });
 
     mailTransport().sendMail({
       from: "security@email.com",
