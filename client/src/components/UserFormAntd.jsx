@@ -66,6 +66,7 @@ export const UserFormAntd = (props) => {
           "POST"
         );
         setEnrollUser(basicData.data);
+        console.log(basicData.data);
       }
       Swal.fire({
         icon: "success",
@@ -111,7 +112,7 @@ export const UserFormAntd = (props) => {
         }
       }, 2500);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       Swal.fire({
         icon: "error",
         title: `${err.response.data.msg}`,
@@ -131,7 +132,7 @@ export const UserFormAntd = (props) => {
   };
 
   const onChange = (e) => {
-    console.log("Valor del checkbox", e.target.checked);
+    // console.log("Valor del checkbox", e.target.checked);
     e.target.checked === true && !isLogin
       ? setAskSecret(true)
       : setAskSecret(false);

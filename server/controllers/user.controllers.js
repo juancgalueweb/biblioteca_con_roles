@@ -1,6 +1,6 @@
 const UserModel = require("../models/user.model");
-const VerificationToken = require("../models/verificationToken.model");
 const { jwtResetPass } = require("../helpers/jwtResetPass");
+const { jwtVerifyEmail } = require("../helpers/jwtVerifyEmail");
 const { genJWT } = require("../helpers/jwt");
 const {
   generateOTP,
@@ -13,6 +13,7 @@ const {
   generateHashPassOrToken,
   comparePassOrToken,
 } = require("../helpers/hashPassOrToken");
+const jwt = require("jsonwebtoken");
 
 //Método para registrar un usuario
 module.exports.registerUser = async (req, res) => {
@@ -37,17 +38,8 @@ module.exports.registerUser = async (req, res) => {
     //Encrypt password
     newUser.password = await generateHashPassOrToken(newUser.password);
 
+    //Generamos un OTP y se lo enviamos al usuario recién registrado, por e-mail, para que lo use cuando valide su e-mail
     const OTP = generateOTP();
-    const hastOTP = await generateHashPassOrToken(OTP);
-
-    const verificationToken = new VerificationToken({
-      owner: newUser._id,
-      token: hastOTP,
-    });
-
-    await verificationToken.save();
-    await newUser.save();
-
     mailTransport().sendMail({
       from: "emailverification@email.com",
       to: newUser.email,
@@ -55,7 +47,14 @@ module.exports.registerUser = async (req, res) => {
       html: generateEmailTemplate(OTP),
     });
 
-    return res.json(newUser);
+    //Hacemos un Hash del OTP y lo guardamos en JWT por 10 min
+    const hastOTP = await generateHashPassOrToken(OTP);
+    const jwtToken = await jwtVerifyEmail(hastOTP);
+
+    // Guardamos el usuario en la BD con el password con hash
+    await newUser.save();
+
+    return res.json({ user: newUser, token: jwtToken });
   } catch (err) {
     res.status(500).json({ success: false, msg: err });
   }
@@ -99,7 +98,7 @@ module.exports.loginUser = async (req, res) => {
 //Método para verificar el correo electrónico
 module.exports.verifyEmail = async (req, res) => {
   try {
-    const { userId, otp } = req.body;
+    const { userId, otp, token } = req.body;
     if (!userId || !otp.trim()) {
       return res
         .status(401)
@@ -123,21 +122,15 @@ module.exports.verifyEmail = async (req, res) => {
         .json({ msg: "Esta cuenta ya se verificó", success: false });
     }
 
-    const token = await VerificationToken.findOne({ owner: user._id });
-    if (!token) {
-      return res
-        .status(401)
-        .json({ msg: "Usuario no encontrado", success: false });
-    }
-
-    const isMatched = comparePassOrToken(otp, token.token);
+    //Buscamos el token con el hash que lo tiene JWT
+    const { otpHash } = jwt.verify(token, process.env.SECRET_KEY);
+    const isMatched = comparePassOrToken(otp, otpHash);
     if (!isMatched) {
       return res.status(401).json({ msg: "Token inválido", success: false });
     }
 
     user.verified = true;
 
-    await VerificationToken.findByIdAndDelete(token._id);
     await user.save();
 
     mailTransport().sendMail({
@@ -149,11 +142,6 @@ module.exports.verifyEmail = async (req, res) => {
     res.json({
       success: true,
       msg: "Su correo fue verificado",
-      user: {
-        name: user.firstName,
-        email: user.email,
-        id: user._id,
-      },
     });
   } catch (err) {
     res.status(500).json({ success: false, msg: err });

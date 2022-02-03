@@ -16,7 +16,12 @@ export const VerifyEmail = () => {
   const { setIsLogin } = useContext(LoginContext);
   const history = useHistory();
 
-  const dataToAxios = { otp: code, userId: enrollUser?._id };
+  const dataToAxios = {
+    userId: enrollUser.user?._id,
+    otp: code,
+    token: enrollUser.token,
+  };
+  console.log("Data to axios", dataToAxios);
 
   const validateEmail = async () => {
     try {
@@ -28,7 +33,7 @@ export const VerifyEmail = () => {
       if (isValidated.data.success) {
         Swal.fire({
           icon: "success",
-          title: `<strong>${enrollUser?.firstName}</strong>, gracias por validar su e-mail`,
+          title: `<strong>${enrollUser?.user?.firstName}</strong>, gracias por validar su e-mail`,
           showConfirmButton: true,
           confirmButtonText: "Ir al login",
         }).then((result) => {
