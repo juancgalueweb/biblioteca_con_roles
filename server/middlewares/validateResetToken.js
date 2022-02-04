@@ -33,7 +33,7 @@ module.exports.isResetTokenValid = async (req, res, next) => {
   } catch (error) {
     return res.status(401).json({
       success: false,
-      msg: "Token inválido o expirado",
+      msg: "Token inválido o expirado. Solicite uno nuevo.",
     });
   }
 

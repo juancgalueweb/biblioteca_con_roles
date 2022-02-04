@@ -6,12 +6,10 @@ import { LoginContext } from "../contexts/LoginContext";
 import { UserContext } from "../contexts/UserContext";
 import Swal from "sweetalert2";
 import { axiosWithoutToken } from "../helpers/axios";
-// import { EnrollUserContext } from "../contexts/EnrollUserContext";
 
 export const UserFormAntd = (props) => {
   const { titleSubmitButton } = props;
   const [askSecret, setAskSecret] = useState(false);
-  // const { setEnrollUser } = useContext(EnrollUserContext);
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -58,7 +56,6 @@ export const UserFormAntd = (props) => {
           { ...values, role: "admin" },
           "POST"
         );
-        // setEnrollUser(adminData.data);
         localStorage.setItem(
           "validateEmail",
           JSON.stringify({
@@ -73,7 +70,6 @@ export const UserFormAntd = (props) => {
           values,
           "POST"
         );
-        // setEnrollUser(basicData.data);
         // console.log(basicData.data);
         localStorage.setItem(
           "validateEmail",
@@ -88,7 +84,7 @@ export const UserFormAntd = (props) => {
         icon: "success",
         title: `<strong>${values.firstName}</strong>, bienvenid@. Revise su inbox para validar su e-mail`,
         showConfirmButton: true,
-        confirmButtonText: "Ok",
+        confirmButtonText: "Ok!",
       }).then((result) => {
         if (result.isConfirmed) {
           history.push("/verify-email");
@@ -308,18 +304,25 @@ export const UserFormAntd = (props) => {
             </Form.Item>
           ) : null}
 
-          <Button type="primary" htmlType="submit" className="mb-3">
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="mb-3 login-form-button"
+          >
             {titleSubmitButton}
           </Button>
-
-          {isLogin ? (
-            <Form.Item>
-              <a className="login-form-forgot" href="/forgot-password">
-                Olvidé mi contraseña
-              </a>
-            </Form.Item>
-          ) : null}
-          {!isLogin ? <br /> : null}
+          <Col span={24} className="d-flex justify-content-between mb-3">
+            {isLogin ? (
+              <>
+                <a className="login-form-forgot" href="/forgot-password">
+                  Olvidé mi contraseña
+                </a>
+                <a className="login-form-forgot" href="/late-validation">
+                  Verificar mi e-mail
+                </a>
+              </>
+            ) : null}
+          </Col>
           <Button onClick={handleOnClick}>
             Ir al {isLogin ? "registro" : "login"}
           </Button>

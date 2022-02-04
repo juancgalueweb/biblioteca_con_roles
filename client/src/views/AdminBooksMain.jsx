@@ -25,7 +25,7 @@ export const AdminBooksMain = () => {
   const getAllBooks = async () => {
     try {
       const booksData = await axiosWithToken("books");
-      console.log("Todos los libros", booksData.data);
+      // console.log("Todos los libros", booksData.data);
       const result = booksData.data.map((row) => ({
         ...row,
         key: uid(),
@@ -33,8 +33,7 @@ export const AdminBooksMain = () => {
       setBooks(result);
       setLoaded(true);
     } catch (err) {
-      console.log("Error al consultar todos los libros");
-      console.log("error", err);
+      // console.log("error", err);
       if (err.response.status === 401) {
         Swal.fire({
           icon: "error",
@@ -67,7 +66,7 @@ export const AdminBooksMain = () => {
         }
       });
     } catch (err) {
-      console.log("Error al borrar", err);
+      // console.log("Error al borrar", err);
       if (err.response.status === 401) {
         Swal.fire({
           icon: "error",

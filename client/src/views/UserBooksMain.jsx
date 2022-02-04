@@ -39,7 +39,7 @@ export const UserBooksMain = () => {
   const getAllBooks = async () => {
     try {
       const booksData = await axiosWithToken("books/user/crs");
-      console.log("Todos los libros", booksData.data);
+      // console.log("Todos los libros", booksData.data);
       const result = booksData.data.map((row) => ({
         ...row,
         key: uid(),
@@ -47,8 +47,7 @@ export const UserBooksMain = () => {
       setBooks(result);
       setLoaded(true);
     } catch (err) {
-      console.log("Error al consultar todos los libros");
-      console.log("error", err);
+      // console.log("error", err);
       if (err?.response?.status === 401) {
         Swal.fire({
           icon: "error",
@@ -199,9 +198,8 @@ export const UserBooksMain = () => {
     try {
       const data = await axiosWithToken(`cr/book/${record._id}`);
       setAllComments(data.data);
-      console.log("Lo que quiero ver", data.data);
     } catch (err) {
-      console.log("Error al consultar todos los libros", err);
+      // console.log("Error al consultar todos los libros", err);
       if (err.response?.status === 401) {
         Swal.fire({
           icon: "error",

@@ -5,7 +5,11 @@ import Container from "react-bootstrap/Container";
 import Swal from "sweetalert2";
 import { axiosWithoutToken } from "../helpers/axios";
 
-export const ForgotPassword = () => {
+export const LateOTPRequest = () => {
+  //Tuve que hacerlo de esta manera, porque importando useHistory y usando history.push() no me recargaba la ruta indicada
+  const createBrowserHistory = require("history").createBrowserHistory;
+  const history = createBrowserHistory({ forceRefresh: true });
+
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
@@ -21,22 +25,34 @@ export const ForgotPassword = () => {
 
   const [form] = Form.useForm();
 
-  //Validar correo de usuario que olvidó la contraseña
-  const forgotPassword = async (values) => {
+  //Enviar OTP para validar e-mail
+  const sendValidationOTP = async (values) => {
     try {
-      const user = await axiosWithoutToken(
-        "auth/forgot-password",
+      const response = await axiosWithoutToken(
+        "auth/late-verify-email",
         values,
         "POST"
       );
-      // console.log(user.data);
+      // console.log("all good", response.data);
+      localStorage.setItem(
+        "validateEmail",
+        JSON.stringify({
+          userId: response.data.user?._id,
+          firstName: response.data.user?.firstName,
+          token: response.data.token,
+        })
+      );
       Swal.fire({
         icon: "success",
-        title: `${user?.data?.msg}`,
-        confirmButtonText: "Gracias!",
+        title: "Revise su inbox para validar su e-mail",
+        showConfirmButton: true,
+        confirmButtonText: "Ok!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          history.push("/verify-email");
+        }
       });
     } catch (error) {
-      // console.log(error.response.data);
       Swal.fire({
         icon: "error",
         title: `${error?.response?.data?.msg}`,
@@ -49,12 +65,12 @@ export const ForgotPassword = () => {
     <Container className="m-3 w-75 mx-auto">
       <Row>
         <Col span={14} className="border rounded bg-light mx-auto pb-2 pt-4">
-          <h2 className="text-center">Recuperar contraseña olvidada</h2>
+          <h2 className="text-center">Ingresar e-mail a validar</h2>
           <Col span={18} className="mx-auto pb-2 pt-4">
             <Form
               form={form}
               {...formItemLayout}
-              onFinish={forgotPassword}
+              onFinish={sendValidationOTP}
               initialValues={{
                 email: "",
               }}
@@ -78,7 +94,7 @@ export const ForgotPassword = () => {
               </Form.Item>
               <Col span={18} className="mx-auto text-center my-2">
                 <Button type="primary" htmlType="submit">
-                  Enviarme link para resetear contraseña
+                  Enviarme PIN para validar e-mail
                 </Button>
               </Col>
             </Form>

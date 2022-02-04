@@ -3,7 +3,6 @@ import { Row, Col, Button } from "antd";
 import Container from "react-bootstrap/Container";
 import ReactPinField from "react-pin-field";
 import styles from "../scss/VerifyEmail.module.scss";
-// import { EnrollUserContext } from "../contexts/EnrollUserContext";
 import { axiosWithoutToken } from "../helpers/axios";
 import { LoginContext } from "../contexts/LoginContext";
 import Swal from "sweetalert2";
@@ -12,7 +11,6 @@ import { useHistory } from "react-router-dom";
 export const VerifyEmail = () => {
   const [code, setCode] = useState("");
   const [, setCompleted] = useState(false);
-  // const { enrollUser } = useContext(EnrollUserContext);
   const { setIsLogin } = useContext(LoginContext);
   const history = useHistory();
 
@@ -54,6 +52,10 @@ export const VerifyEmail = () => {
           title: `${data.msg}`,
           confirmButtonText: "Oh no!",
         });
+        if (data.jwtError) {
+          localStorage.removeItem("validateEmail");
+          history.push("/login");
+        }
       }
     }
   };

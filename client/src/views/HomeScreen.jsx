@@ -15,7 +15,7 @@ export const HomeScreen = () => {
       const RCHomeScreen = await axiosWithoutToken("books/homescreen/crs");
       setBookData(RCHomeScreen.data);
     } catch (err) {
-      console.log("Error al obtener comentario/rating del libro", err);
+      // console.log("Error al obtener comentario/rating del libro", err);
       Swal.fire({
         icon: "error",
         title: "Error al traerse los comentarios/rating",

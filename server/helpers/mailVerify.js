@@ -113,8 +113,7 @@ module.exports.generateSendOTPTemplate = (code) => {
       h1 {
         font-size: 35px;
         font-weight: 300;
-        text-align: center;
-        text-transform: capitalize; }
+        text-align: center; }
       p,
       ul,
       ol {
@@ -264,7 +263,6 @@ module.exports.generateSendOTPTemplate = (code) => {
         <td>&nbsp;</td>
         <td class="container">
           <div class="content">
-            <span class="preheader">Subscribe to Coloured.com.ng mailing list</span>
             <table class="main">
 
               <!-- START MAIN CONTENT AREA -->
@@ -402,8 +400,7 @@ module.exports.generatePasswordResetTemplate = (url) => {
         h1 {
           font-size: 35px;
           font-weight: 300;
-          text-align: center;
-          text-transform: capitalize; }
+          text-align: center; }
         p,
         ul,
         ol {
@@ -571,7 +568,7 @@ module.exports.generatePasswordResetTemplate = (url) => {
                                   <table border="0" cellpadding="0" cellspacing="0">
                                     <tbody>
                                       <tr>
-                                        <td> <a href=${url} target="_blank">resetear contraseña</a> </td>
+                                        <td> <a href=${url} target="_blank">Resetear contraseña</a> </td>
                                       </tr>
                                     </tbody>
                                   </table>
@@ -691,8 +688,7 @@ module.exports.generalEmailTemplate = (title, message) => {
       h1 {
         font-size: 35px;
         font-weight: 300;
-        text-align: center;
-        text-transform: capitalize; }
+        text-align: center; }
       p,
       ul,
       ol {
@@ -842,7 +838,6 @@ module.exports.generalEmailTemplate = (title, message) => {
         <td>&nbsp;</td>
         <td class="container">
           <div class="content">
-            <span class="preheader">Subscribe to Coloured.com.ng mailing list</span>
             <table class="main">
 
               <!-- START MAIN CONTENT AREA -->

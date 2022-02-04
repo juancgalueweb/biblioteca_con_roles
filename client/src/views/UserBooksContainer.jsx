@@ -16,11 +16,11 @@ export const UserBooksContainer = () => {
   const getCRByBook = async () => {
     try {
       const CR = await axiosWithToken(`cr/book/user/${id}`);
-      console.log("Data de comentarios/rating de axios", CR.data);
+      // console.log("Data de comentarios/rating de axios", CR.data);
       setInitialData(CR.data);
       setLoaded(true);
     } catch (err) {
-      console.log("Error al obtener comentario/rating por su ID", err);
+      // console.log("Error al obtener comentario/rating por su ID", err);
       if (err.response.status === 401) {
         Swal.fire({
           icon: "error",
@@ -48,7 +48,7 @@ export const UserBooksContainer = () => {
         history.push("/user/books");
       }, 2100);
     } catch (err) {
-      console.log("Error al crear comentario/rating", err);
+      // console.log("Error al crear comentario/rating", err);
       if (err.response.status === 401) {
         Swal.fire({
           icon: "error",
@@ -64,14 +64,14 @@ export const UserBooksContainer = () => {
   };
 
   const updateCRById = async (values) => {
-    console.log("Value del updateCR", values);
+    // console.log("Value del updateCR", values);
     try {
-      const response = await axiosWithToken(
+      await axiosWithToken(
         `cr/edit/${initialData.cr._id}`,
         { ...values, _id: initialData.cr._id },
         "PUT"
       );
-      console.log("Respuesta al actualizar CR", response);
+      // console.log("Respuesta al actualizar CR", response);
       Swal.fire({
         icon: "success",
         title: "El Comentario/Rating fue modificado",
@@ -82,7 +82,7 @@ export const UserBooksContainer = () => {
         history.push("/user/books");
       }, 2100);
     } catch (err) {
-      console.log("Error al modificar el libro", err);
+      // console.log("Error al modificar el libro", err);
       if (err.response.status === 401) {
         Swal.fire({
           icon: "error",

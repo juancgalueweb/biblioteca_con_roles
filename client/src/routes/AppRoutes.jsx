@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { ForgotPassword } from "../components/ForgotPassword";
+import { LateOTPRequest } from "../components/LateOTPRequest";
 import { NavbarMenu } from "../components/NavbarMenu";
 import { ResetPassword } from "../components/ResetPassword";
 import { VerifyEmail } from "../components/VerifyEmail";
@@ -28,7 +29,7 @@ export const AppRoutes = () => {
         <Route exact path="/forgot-password">
           <ForgotPassword />
         </Route>
-        <Route path="/reset-password">
+        <Route exact path="/reset-password">
           <ResetPassword />
         </Route>
         <Route exact path="/admin/books">
@@ -48,6 +49,9 @@ export const AppRoutes = () => {
         </Route>
         <Router exact path="/">
           <HomeScreen />
+        </Router>
+        <Router exact path="/late-validation">
+          <LateOTPRequest />
         </Router>
       </Switch>
     </Router>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Input, Button, Alert } from "antd";
 import Container from "react-bootstrap/Container";
 import { LockOutlined } from "@ant-design/icons";
-// import Swal from "sweetalert2";
 import { axiosWithoutToken } from "../helpers/axios";
 import { useLocation, useHistory } from "react-router-dom";
 import queryString from "query-string";
@@ -35,11 +34,8 @@ export const ResetPassword = () => {
       await axiosWithoutToken(`auth/verify-token?token=${token}&id=${id}`);
       setBusy(false);
     } catch (error) {
-      if (error?.response?.data) {
-        const { data } = error.response;
-        console.log(data);
-        if (!data.success) return setInvalidUser(data.msg);
-        return console.log(data);
+      if (!error?.response?.data.success) {
+        return setInvalidUser(error?.response?.data?.msg);
       }
     }
   };
@@ -56,7 +52,7 @@ export const ResetPassword = () => {
         "POST"
       );
       setBusy(false);
-      console.log(newPass.data);
+      // console.log(newPass.data);
       if (newPass?.data?.success) {
         Swal.fire({
           icon: "success",
@@ -69,12 +65,13 @@ export const ResetPassword = () => {
         }, 2500);
       }
     } catch (error) {
-      console.log(error.response.data);
+      // console.log(error.response.data);
       Swal.fire({
         icon: "error",
         title: `${error.response.data.msg}`,
-        confirmButtonText: "Lo revisaré!",
+        confirmButtonText: "Oh no!",
       });
+      history.push("/login");
     }
   };
 

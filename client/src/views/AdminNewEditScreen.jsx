@@ -28,11 +28,11 @@ export const AdminNewEditScreen = () => {
   const getBookById = async () => {
     try {
       const book = await axiosWithToken(`book/${id}`);
-      console.log("Data del libro de axios", book.data);
+      // console.log("Data del libro de axios", book.data);
       setInitialData(book.data);
       setLoaded(true);
     } catch (err) {
-      console.log("Error al obtener un libro por su ID", err);
+      // console.log("Error al obtener un libro por su ID", err);
       if (err.response.status === 401) {
         Swal.fire({
           icon: "error",
@@ -48,7 +48,7 @@ export const AdminNewEditScreen = () => {
   };
 
   const newBook = async (values) => {
-    console.log("Values adentro del newBook", values);
+    // console.log("Values adentro del newBook", values);
     try {
       await axiosWithToken(
         "book/create",
@@ -88,8 +88,8 @@ export const AdminNewEditScreen = () => {
 
   const updateBookById = async (values) => {
     try {
-      const response = await axiosWithToken(`book/update/${id}`, values, "PUT");
-      console.log("Respuesta al actualizar libro", response);
+      await axiosWithToken(`book/update/${id}`, values, "PUT");
+      // console.log("Respuesta al actualizar libro", response);
       Swal.fire({
         icon: "success",
         title: "El libro fue modificado",
@@ -100,7 +100,7 @@ export const AdminNewEditScreen = () => {
         history.push("/admin/books");
       }, 2100);
     } catch (err) {
-      console.log("Error al modificar el libro", err);
+      // console.log("Error al modificar el libro", err);
       if (err.response.status === 401) {
         Swal.fire({
           icon: "error",

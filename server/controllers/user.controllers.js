@@ -57,7 +57,7 @@ module.exports.registerUser = async (req, res) => {
 
     return res.json({ user: newUser, token: jwtToken });
   } catch (err) {
-    res.status(500).json({ success: false, msg: err });
+    return res.status(500).json({ success: false, msg: err });
   }
 };
 
@@ -92,7 +92,7 @@ module.exports.loginUser = async (req, res) => {
         .json({ success: false, msg: "Contraseña incorrecta" });
     }
   } catch (err) {
-    res.status(500).json({ success: false, msg: err });
+    return res.status(500).json({ success: false, msg: err });
   }
 };
 
@@ -100,6 +100,10 @@ module.exports.loginUser = async (req, res) => {
 module.exports.verifyEmail = async (req, res) => {
   try {
     const { userId, otp, token } = req.body;
+
+    //Buscamos el token con el hash que lo tiene JWT
+    const { otpHash } = jwt.verify(token, process.env.SECRET_KEY);
+
     if (!userId || !otp.trim()) {
       return res
         .status(401)
@@ -107,7 +111,7 @@ module.exports.verifyEmail = async (req, res) => {
     }
 
     if (!isValidObjectId(userId)) {
-      return res.status(401).json({ msg: "userId inválida", success: false });
+      return res.status(401).json({ msg: "userId inválido", success: false });
     }
 
     const user = await UserModel.findById(userId);
@@ -123,15 +127,12 @@ module.exports.verifyEmail = async (req, res) => {
         .json({ msg: "Esta cuenta ya se verificó", success: false });
     }
 
-    //Buscamos el token con el hash que lo tiene JWT
-    const { otpHash } = jwt.verify(token, process.env.SECRET_KEY);
     const isMatched = comparePassOrToken(otp, otpHash);
     if (!isMatched) {
       return res.status(401).json({ msg: "Token inválido", success: false });
     }
 
     user.verified = true;
-
     await user.save();
 
     mailTransport().sendMail({
@@ -143,12 +144,17 @@ module.exports.verifyEmail = async (req, res) => {
         "La verificación del e-mail fue un éxito."
       ),
     });
-    res.json({
+
+    return res.json({
       success: true,
       msg: "Su correo fue verificado",
     });
   } catch (err) {
-    res.status(500).json({ success: false, msg: err });
+    return res.status(500).json({
+      success: false,
+      msg: "Token ha expirado",
+      jwtError: err.message,
+    });
   }
 };
 
@@ -167,6 +173,12 @@ module.exports.forgotPassword = async (req, res) => {
         .json({ msg: "Usuario no encontrado", success: false });
     }
 
+    if (!user.verified) {
+      return res
+        .status(401)
+        .json({ msg: "Su e-mail no ha sido validado", success: false });
+    }
+
     const jwtToken = await jwtResetPass(user._id);
 
     mailTransport().sendMail({
@@ -178,12 +190,12 @@ module.exports.forgotPassword = async (req, res) => {
       ),
     });
 
-    res.json({
+    return res.json({
       success: true,
       msg: "Se envió a su e-mail el link para resetear la contraseña",
     });
   } catch (err) {
-    res.status(500).json({ success: false, msg: err });
+    return res.status(500).json({ success: false, msg: err });
   }
 };
 
@@ -229,8 +241,47 @@ module.exports.resetPassword = async (req, res) => {
       ),
     });
 
-    res.json({ success: true, msg: "Reseteo de contraseña exitoso" });
+    return res.json({ success: true, msg: "Reseteo de contraseña exitoso" });
   } catch (err) {
-    res.status(500).json({ success: false, msg: err });
+    return res.status(500).json({ success: false, msg: err });
+  }
+};
+
+module.exports.lateVerifyEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(401).json({ msg: "E-mail inválido", success: false });
+    }
+
+    const user = await UserModel.findOne({ email: email });
+    if (!user) {
+      return res
+        .status(401)
+        .json({ msg: "Usuario no encontrado", success: false });
+    }
+
+    if (user.verified) {
+      return res
+        .status(401)
+        .json({ msg: "Esta cuenta ya se verificó", success: false });
+    }
+
+    const OTP = generateOTP();
+    mailTransport().sendMail({
+      from: "emailverification@email.com",
+      to: user.email,
+      subject: "Por favor, verifica tu correo electrónico",
+      html: generateSendOTPTemplate(OTP),
+    });
+
+    //Hacemos un Hash del OTP y lo guardamos en JWT por 10 min
+    const hastOTP = await generateHashPassOrToken(OTP);
+    const jwtToken = await jwtVerifyEmail(hastOTP);
+
+    return res.json({ user: user, token: jwtToken });
+  } catch (err) {
+    return res.status(500).json({ success: false, msg: err });
   }
 };
