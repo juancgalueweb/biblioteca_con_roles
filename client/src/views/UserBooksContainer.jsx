@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Button, Row, Col } from "antd";
+import { Button, Row, Col, Spin } from "antd";
 import { useHistory, useParams } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { BookEditRC } from "../components/BookEditRC";
@@ -105,7 +105,10 @@ export const UserBooksContainer = () => {
 
   useEffect(() => {
     if (user && user.role === "basic") {
-      getCRByBook();
+      const timer = setTimeout(() => {
+        getCRByBook();
+      }, 350);
+      return () => clearTimeout(timer);
     } else {
       history.push("/login");
     }
@@ -169,7 +172,9 @@ export const UserBooksContainer = () => {
           titleButton={initialData?.cr === null ? "Crear" : "Actualizar"}
         />
       ) : (
-        <h1>Cargando...</h1>
+        <div className="mx-auto pb-2 pt-4 light-background w-50 d-flex flex-column align-items-center">
+          <Spin size="large" style={{ marginTop: "100px" }} />
+        </div>
       )}
     </>
   );

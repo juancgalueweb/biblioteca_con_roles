@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Row, Col, Input, Button, Alert } from "antd";
+import { Form, Row, Col, Input, Button, Alert, Spin } from "antd";
 import Container from "react-bootstrap/Container";
 import { LockOutlined } from "@ant-design/icons";
 import { axiosWithoutToken } from "../helpers/axios";
@@ -11,7 +11,7 @@ export const ResetPassword = () => {
   const location = useLocation();
   const history = useHistory();
   const [invalidUser, setInvalidUser] = useState(false);
-  const [busy, setBusy] = useState(true);
+  const [loaded, setLoaded] = useState(false);
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -32,7 +32,7 @@ export const ResetPassword = () => {
   const verifyToken = async () => {
     try {
       await axiosWithoutToken(`auth/verify-token?token=${token}&id=${id}`);
-      setBusy(false);
+      setLoaded(true);
     } catch (error) {
       if (!error?.response?.data.success) {
         return setInvalidUser(error?.response?.data?.msg);
@@ -41,7 +41,10 @@ export const ResetPassword = () => {
   };
 
   useEffect(() => {
-    verifyToken();
+    const timer = setTimeout(() => {
+      verifyToken();
+    }, 500);
+    return () => clearTimeout(timer);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const resetPassword = async (values) => {
@@ -51,7 +54,7 @@ export const ResetPassword = () => {
         { password: values.password },
         "POST"
       );
-      setBusy(false);
+      setLoaded(true);
       // console.log(newPass.data);
       if (newPass?.data?.success) {
         Swal.fire({
@@ -75,9 +78,21 @@ export const ResetPassword = () => {
     }
   };
 
+  if (invalidUser) {
+    return (
+      <Container className="m-3 w-75 mx-auto">
+        <Alert
+          message={invalidUser}
+          type="error"
+          className="text-center fs-3"
+        />
+      </Container>
+    );
+  }
+
   return (
     <>
-      {!invalidUser && !busy ? (
+      {loaded ? (
         <Container className="m-3 w-75 mx-auto">
           <Row>
             <Col
@@ -154,12 +169,8 @@ export const ResetPassword = () => {
           </Row>
         </Container>
       ) : (
-        <Container className="m-3 w-75 mx-auto">
-          <Alert
-            message={invalidUser}
-            type="error"
-            className="text-center fs-3"
-          />
+        <Container className="m-3 w-75 mx-auto text-center">
+          <Spin size="large" style={{ marginTop: "100px" }} />
         </Container>
       )}
     </>

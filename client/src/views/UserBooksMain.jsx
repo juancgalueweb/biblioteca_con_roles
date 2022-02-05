@@ -11,6 +11,7 @@ import {
   Rate,
   Modal,
   Timeline,
+  Spin,
 } from "antd";
 import { axiosWithToken } from "../helpers/axios";
 import { EditOutlined, WechatOutlined } from "@ant-design/icons";
@@ -247,9 +248,9 @@ export const UserBooksMain = () => {
         </Col>
       </Row>
       <Row justify="center">
-        <Col span={22}>
+        <Col span={22} style={!loaded ? { textAlign: "center" } : ""}>
           <h2 className="text-center">Lista de Libros</h2>
-          {loaded && (
+          {loaded ? (
             <>
               <div>
                 <p className={styles.registeredBooks}>
@@ -272,6 +273,8 @@ export const UserBooksMain = () => {
                 }}
               />
             </>
+          ) : (
+            <Spin size="large" style={{ marginTop: "250px" }} />
           )}
         </Col>
       </Row>

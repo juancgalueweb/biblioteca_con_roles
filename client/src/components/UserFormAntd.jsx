@@ -1,15 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Form, Row, Col, Input, Button, Checkbox } from "antd";
+import { Form, Row, Col, Input, Button, Checkbox, Spin } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { LoginContext } from "../contexts/LoginContext";
 import { UserContext } from "../contexts/UserContext";
 import Swal from "sweetalert2";
 import { axiosWithoutToken } from "../helpers/axios";
+import Container from "react-bootstrap/Container";
 
 export const UserFormAntd = (props) => {
   const { titleSubmitButton } = props;
   const [askSecret, setAskSecret] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -150,184 +152,206 @@ export const UserFormAntd = (props) => {
       : setAskSecret(false);
   };
 
-  return (
-    <Row>
-      <Col span={18} className="mx-auto pb-2 pt-4">
-        <Form
-          form={form}
-          {...formItemLayout}
-          onFinish={isLogin ? loginUser : registerUser}
-          initialValues={{
-            firstName: "",
-            lastName: "",
-            email: "",
-            password: "",
-            passwordConfirmation: "",
-          }}
-          onFinishFailed={onFinishFailed}
-        >
-          {!isLogin ? (
-            <Form.Item
-              label="Nombre"
-              name="firstName"
-              rules={[
-                {
-                  type: "string",
-                  required: true,
-                  message: "Por favor, ingrese su nombre",
-                },
-                { min: 3, message: "Mínimo 3 caracteres" },
-              ]}
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoaded(true);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loaded) {
+    return (
+      <Col span={14} className="border rounded bg-light mx-auto pb-2 pt-4">
+        {isLogin ? (
+          <h2 className="text-center">Login</h2>
+        ) : (
+          <h2 className="text-center">Registro</h2>
+        )}
+        <Row>
+          <Col span={18} className="mx-auto pb-2 pt-4">
+            <Form
+              form={form}
+              {...formItemLayout}
+              onFinish={isLogin ? loginUser : registerUser}
+              initialValues={{
+                firstName: "",
+                lastName: "",
+                email: "",
+                password: "",
+                passwordConfirmation: "",
+              }}
+              onFinishFailed={onFinishFailed}
             >
-              <Input placeholder="John" />
-            </Form.Item>
-          ) : null}
+              {!isLogin ? (
+                <Form.Item
+                  label="Nombre"
+                  name="firstName"
+                  rules={[
+                    {
+                      type: "string",
+                      required: true,
+                      message: "Por favor, ingrese su nombre",
+                    },
+                    { min: 3, message: "Mínimo 3 caracteres" },
+                  ]}
+                >
+                  <Input placeholder="John" />
+                </Form.Item>
+              ) : null}
 
-          {!isLogin ? (
-            <Form.Item
-              label="Apellido"
-              name="lastName"
-              rules={[
-                {
-                  type: "string",
-                  required: true,
-                  message: "Por favor, ingrese su apellido",
-                },
-                { min: 3, message: "Mínimo 3 caracteres" },
-              ]}
-            >
-              <Input placeholder="Wick" />
-            </Form.Item>
-          ) : null}
+              {!isLogin ? (
+                <Form.Item
+                  label="Apellido"
+                  name="lastName"
+                  rules={[
+                    {
+                      type: "string",
+                      required: true,
+                      message: "Por favor, ingrese su apellido",
+                    },
+                    { min: 3, message: "Mínimo 3 caracteres" },
+                  ]}
+                >
+                  <Input placeholder="Wick" />
+                </Form.Item>
+              ) : null}
 
-          <Form.Item
-            label="Correo electrónico"
-            name="email"
-            rules={[
-              {
-                type: "email",
-                required: true,
-                message: "Por favor, ingrese un email válido",
-              },
-            ]}
-          >
-            {isLogin ? (
-              <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
-                placeholder="correo@dominio.com"
-              />
-            ) : (
-              <Input placeholder="correo@dominio.com" />
-            )}
-          </Form.Item>
-
-          <Form.Item
-            label="Contraseña"
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: "Por favor, ingrese su contraseña",
-              },
-              { min: 8, message: "Mínimo 8 caracteres" },
-              { max: 20, message: "Máximo 20 caracteres" },
-            ]}
-            hasFeedback
-          >
-            {isLogin ? (
-              <Input.Password
-                prefix={<LockOutlined className="site-form-item-icon" />}
-                placeholder="********"
-              />
-            ) : (
-              <Input.Password placeholder="********" />
-            )}
-          </Form.Item>
-
-          {!isLogin ? (
-            <Form.Item
-              name="passwordConfirmation"
-              label="Confirmar contraseña"
-              dependencies={["password"]}
-              hasFeedback
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor, confirme su contraseña",
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue("password") === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(
-                      new Error("Las contraseñas ingresadas no coinciden")
-                    );
-                  },
-                }),
-              ]}
-            >
-              <Input.Password placeholder="********" />
-            </Form.Item>
-          ) : null}
-
-          {!isLogin ? (
-            <>
               <Form.Item
-                name="admin"
-                valuePropName="checked"
-                {...tailFormItemLayout}
+                label="Correo electrónico"
+                name="email"
+                rules={[
+                  {
+                    type: "email",
+                    required: true,
+                    message: "Por favor, ingrese un email válido",
+                  },
+                ]}
               >
-                <Checkbox onChange={onChange}>
-                  Quiero registrarme como admin
-                </Checkbox>
+                {isLogin ? (
+                  <Input
+                    prefix={<UserOutlined className="site-form-item-icon" />}
+                    placeholder="correo@dominio.com"
+                  />
+                ) : (
+                  <Input placeholder="correo@dominio.com" />
+                )}
               </Form.Item>
-            </>
-          ) : null}
 
-          {askSecret && !isLogin ? (
-            <Form.Item
-              label="Secreto"
-              name="secretPhrase"
-              rules={[
-                {
-                  validator: (_, value) =>
-                    value === process.env.REACT_APP_SECRET
-                      ? Promise.resolve()
-                      : Promise.reject(
-                          new Error("Secreto incorrecto para ser admin")
-                        ),
-                },
-              ]}
-            >
-              <Input.Password placeholder="Ingrese el secreto para ser admin" />
-            </Form.Item>
-          ) : null}
+              <Form.Item
+                label="Contraseña"
+                name="password"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor, ingrese su contraseña",
+                  },
+                  { min: 8, message: "Mínimo 8 caracteres" },
+                  { max: 20, message: "Máximo 20 caracteres" },
+                ]}
+                hasFeedback
+              >
+                {isLogin ? (
+                  <Input.Password
+                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    placeholder="********"
+                  />
+                ) : (
+                  <Input.Password placeholder="********" />
+                )}
+              </Form.Item>
 
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="mb-3 login-form-button"
-          >
-            {titleSubmitButton}
-          </Button>
-          <Col span={24} className="d-flex justify-content-between mb-3">
-            {isLogin ? (
-              <>
-                <a className="login-form-forgot" href="/forgot-password">
-                  Olvidé mi contraseña
-                </a>
-                <a className="login-form-forgot" href="/late-validation">
-                  Verificar mi e-mail
-                </a>
-              </>
-            ) : null}
+              {!isLogin ? (
+                <Form.Item
+                  name="passwordConfirmation"
+                  label="Confirmar contraseña"
+                  dependencies={["password"]}
+                  hasFeedback
+                  rules={[
+                    {
+                      required: true,
+                      message: "Por favor, confirme su contraseña",
+                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue("password") === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error("Las contraseñas ingresadas no coinciden")
+                        );
+                      },
+                    }),
+                  ]}
+                >
+                  <Input.Password placeholder="********" />
+                </Form.Item>
+              ) : null}
+
+              {!isLogin ? (
+                <>
+                  <Form.Item
+                    name="admin"
+                    valuePropName="checked"
+                    {...tailFormItemLayout}
+                  >
+                    <Checkbox onChange={onChange}>
+                      Quiero registrarme como admin
+                    </Checkbox>
+                  </Form.Item>
+                </>
+              ) : null}
+
+              {askSecret && !isLogin ? (
+                <Form.Item
+                  label="Secreto"
+                  name="secretPhrase"
+                  rules={[
+                    {
+                      validator: (_, value) =>
+                        value === process.env.REACT_APP_SECRET
+                          ? Promise.resolve()
+                          : Promise.reject(
+                              new Error("Secreto incorrecto para ser admin")
+                            ),
+                    },
+                  ]}
+                >
+                  <Input.Password placeholder="Ingrese el secreto para ser admin" />
+                </Form.Item>
+              ) : null}
+
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="mb-3 login-form-button"
+              >
+                {titleSubmitButton}
+              </Button>
+              <Col span={24} className="d-flex justify-content-between mb-3">
+                {isLogin ? (
+                  <>
+                    <a className="login-form-forgot" href="/forgot-password">
+                      Olvidé mi contraseña
+                    </a>
+                    <a className="login-form-forgot" href="/late-validation">
+                      Verificar mi e-mail
+                    </a>
+                  </>
+                ) : null}
+              </Col>
+              <Button onClick={handleOnClick}>
+                Ir al {isLogin ? "registro" : "login"}
+              </Button>
+            </Form>
           </Col>
-          <Button onClick={handleOnClick}>
-            Ir al {isLogin ? "registro" : "login"}
-          </Button>
-        </Form>
+        </Row>
       </Col>
-    </Row>
-  );
+    );
+  } else {
+    return (
+      <Container className="m-3 w-75 mx-auto text-center">
+        <Spin size="large" style={{ marginTop: "100px" }} />
+      </Container>
+    );
+  }
 };
