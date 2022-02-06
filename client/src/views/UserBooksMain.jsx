@@ -199,6 +199,7 @@ export const UserBooksMain = () => {
     try {
       const data = await axiosWithToken(`cr/book/${record._id}`);
       setAllComments(data.data);
+      console.log("Comentarios por libro", allComments);
     } catch (err) {
       // console.log("Error al consultar todos los libros", err);
       if (err.response?.status === 401) {
@@ -297,11 +298,16 @@ export const UserBooksMain = () => {
                 </span>
                 <br />
                 <Rate allowHalf disabled defaultValue={comment?.rating} />
-                <p>
+                <br />
+                <span>
                   "<em>{comment?.comment}</em>"
-                  <br />
-                  Publicado {moment(comment?.updatedAt).calendar()}
-                </p>
+                </span>
+                <br />
+                {comment?.createdAt === comment?.updatedAt ? (
+                  <span>Creado {moment(comment?.createdAt).calendar()}</span>
+                ) : (
+                  <span>Editado {moment(comment?.updatedAt).calendar()}</span>
+                )}
               </Timeline.Item>
             ))}
           </Timeline>
