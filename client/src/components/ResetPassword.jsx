@@ -1,3 +1,5 @@
+//TODO: corregir que cuando la clave es igual a la anterior, no te redirija al login
+
 import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Input, Button, Alert, Spin } from "antd";
 import Container from "react-bootstrap/Container";
@@ -67,14 +69,18 @@ export const ResetPassword = () => {
           history.push("/login");
         }, 2500);
       }
-    } catch (error) {
-      // console.log(error.response.data);
-      Swal.fire({
-        icon: "error",
-        title: `${error.response.data.msg}`,
-        confirmButtonText: "Oh no!",
-      });
-      history.push("/login");
+    } catch (err) {
+      if (err?.response?.data) {
+        const { data } = err.response;
+        Swal.fire({
+          icon: "error",
+          title: `${data.msg}`,
+          confirmButtonText: "Oh no!",
+        });
+        if (data.jwtError) {
+          history.push("/login");
+        }
+      }
     }
   };
 

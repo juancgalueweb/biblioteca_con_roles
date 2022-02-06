@@ -30,10 +30,11 @@ module.exports.isResetTokenValid = async (req, res, next) => {
   try {
     const jwtResponse = jwt.verify(token, process.env.SECRET_KEY);
     req.user = jwtResponse.userId;
-  } catch (error) {
+  } catch (err) {
     return res.status(401).json({
       success: false,
       msg: "Token inválido o expirado. Solicite uno nuevo.",
+      jwtError: err.message,
     });
   }
 
