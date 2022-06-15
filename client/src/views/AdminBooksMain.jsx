@@ -37,7 +37,6 @@ export const AdminBooksMain = () => {
       if (err) {
         Swal.fire({
           icon: "error",
-          // title: "Su sesión ha expirado. Debe volver a iniciar sesión.",
           title: `${err.response.data.msg}`,
           showConfirmButton: false,
           timer: 2000,

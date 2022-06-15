@@ -6,7 +6,7 @@ module.exports.genJWT = (userId, firstName, email, role) => {
     jwt.sign(
       payload,
       process.env.SECRET_KEY,
-      { expiresIn: "10000" },
+      { expiresIn: "24h" },
       (err, token) => {
         if (err) {
           reject("No se puede generer el token");
