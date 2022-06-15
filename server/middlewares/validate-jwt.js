@@ -18,7 +18,13 @@ module.exports.validateJWT = (req, res, next) => {
     req.email = email;
     req.role = role;
   } catch (err) {
-    console.log(err);
+    if (err instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({
+        success: false,
+        msg: "Token expirado. Vuelva a iniciar sesión.",
+      });
+    }
+    // console.log(err);
     return res.status(401).json({
       success: false,
       msg: "Token no válido",

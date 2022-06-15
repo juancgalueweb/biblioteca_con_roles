@@ -33,10 +33,10 @@ export const AdminNewEditScreen = () => {
       setLoaded(true);
     } catch (err) {
       // console.log("Error al obtener un libro por su ID", err);
-      if (err.response.status === 401) {
+      if (err) {
         Swal.fire({
           icon: "error",
-          title: "Su sesión ha expirado. Debe volver a iniciar sesión.",
+          title: `${err.response.data.msg}`,
           showConfirmButton: false,
           timer: 2000,
         });
@@ -72,10 +72,10 @@ export const AdminNewEditScreen = () => {
         text: err.response.data.message,
         confirmButtonText: "Aceptar",
       });
-      if (err.response.status === 401) {
+      if (err) {
         Swal.fire({
           icon: "error",
-          title: "Su sesión ha expirado. Debe volver a iniciar sesión.",
+          title: `${err.response.data.msg}`,
           showConfirmButton: false,
           timer: 2000,
         });
@@ -101,10 +101,10 @@ export const AdminNewEditScreen = () => {
       }, 2100);
     } catch (err) {
       // console.log("Error al modificar el libro", err);
-      if (err.response.status === 401) {
+      if (err) {
         Swal.fire({
           icon: "error",
-          title: "Su sesión ha expirado. Debe volver a iniciar sesión.",
+          title: `${err.response.data.msg}`,
           showConfirmButton: false,
           timer: 2000,
         });

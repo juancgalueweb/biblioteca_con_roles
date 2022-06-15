@@ -34,10 +34,11 @@ export const AdminBooksMain = () => {
       setLoaded(true);
     } catch (err) {
       // console.log("error", err);
-      if (err.response.status === 401) {
+      if (err) {
         Swal.fire({
           icon: "error",
-          title: "Su sesión ha expirado. Debe volver a iniciar sesión.",
+          // title: "Su sesión ha expirado. Debe volver a iniciar sesión.",
+          title: `${err.response.data.msg}`,
           showConfirmButton: false,
           timer: 2000,
         });
@@ -67,10 +68,10 @@ export const AdminBooksMain = () => {
       });
     } catch (err) {
       // console.log("Error al borrar", err);
-      if (err.response.status === 401) {
+      if (err) {
         Swal.fire({
           icon: "error",
-          title: "Su sesión ha expirado. Debe volver a iniciar sesión.",
+          title: `${err.response.data.msg}`,
           showConfirmButton: false,
           timer: 2000,
         });
