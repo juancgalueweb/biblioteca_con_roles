@@ -137,7 +137,7 @@ export const UserBooksMain = () => {
       title: "Img",
       dataIndex: "bookImageUrl",
       render: (record) => {
-        return <Image height={60} src={!record ? noBookCover : record} />;
+        return <Image width={40} src={!record ? noBookCover : record} />;
       },
     },
     {

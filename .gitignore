@@ -26,10 +26,10 @@ Temporary Items
 .apdisk
 
 # Node_modules
-/client/node_modules
-/node_modules
+client/node_modules
+server/node_modules
 
 #Environmental variables
-.env
-/client/.env.development
-/client/.env.production
+server/.env
+client/.env.development
+client/.env.production
