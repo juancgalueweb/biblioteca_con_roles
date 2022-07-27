@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { uid } from "../helpers/uniqueId";
 import noBookCover from "../images/book-without-cover.gif";
 import { axiosWithoutToken } from "../helpers/axios";
+import { getRandomIntInclusive } from "../helpers/getRandomIntInclusive";
+import { commentShortener } from "../helpers/commentsShortener";
 
 export const HomeScreen = () => {
   const [bookData, setBookData] = useState([]);
@@ -33,15 +35,10 @@ export const HomeScreen = () => {
     let data = [];
     for (const libro of bookData) {
       if (libro.comments.length > 0) {
-        const getRandomIntInclusive = (min, max) => {
-          min = Math.ceil(min);
-          max = Math.floor(max);
-          return Math.floor(Math.random() * (max - min) + min);
-        };
         const randomNum = getRandomIntInclusive(0, libro.comments.length);
         data.push({
           title: libro.title,
-          comment: libro.comments[randomNum].comment,
+          comment: commentShortener(libro.comments[randomNum].comment),
           rating: libro.comments[randomNum].rating,
           image: libro.bookImageUrl,
         });
@@ -79,7 +76,6 @@ export const HomeScreen = () => {
           </div>
         ))}
       </Carousel>
-
       <Footer />
     </>
   );
