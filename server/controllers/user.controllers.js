@@ -41,12 +41,14 @@ module.exports.registerUser = async (req, res) => {
 
     //Generamos un OTP y se lo enviamos al usuario recién registrado, por e-mail, para que lo use cuando valide su e-mail
     const OTP = generateOTP();
-    mailTransport().sendMail({
-      from: "emailverification@email.com",
-      to: newUser.email,
-      subject: "Por favor, verifica tu correo electrónico",
-      html: generateSendOTPTemplate(OTP),
-    });
+
+    //Usamos Sendinblue para enviar el OTP al usuario
+    mailTransport(
+      "Verifica tu correo electrónico",
+      `${newUser.email}`,
+      `${newUser.firstName} ${newUser.lastName}`,
+      generateSendOTPTemplate(OTP)
+    );
 
     //Hacemos un Hash del OTP y lo guardamos en JWT por 10 min
     const hastOTP = await generateHashPassOrToken(OTP);
@@ -135,15 +137,15 @@ module.exports.verifyEmail = async (req, res) => {
     user.verified = true;
     await user.save();
 
-    mailTransport().sendMail({
-      from: "emailverification@email.com",
-      to: user.email,
-      subject: "Verificación exitosa",
-      html: generalEmailTemplate(
+    mailTransport(
+      "Verificación exitosa",
+      `${user.email}`,
+      `${user.firstName} ${user.lastName}`,
+      generalEmailTemplate(
         `Muchas gracias, ${user.firstName}`,
         "La verificación del e-mail fue un éxito."
-      ),
-    });
+      )
+    );
 
     return res.json({
       success: true,
@@ -181,14 +183,14 @@ module.exports.forgotPassword = async (req, res) => {
 
     const jwtToken = await jwtResetPass(user._id);
 
-    mailTransport().sendMail({
-      from: "security@email.com",
-      to: user.email,
-      subject: "Reseteo de contraseña",
-      html: generatePasswordResetTemplate(
+    mailTransport(
+      "Reseteo de contraseña",
+      `${user.email}`,
+      `${user.firstName} ${user.lastName}`,
+      generatePasswordResetTemplate(
         `http://localhost:3000/reset-password?token=${jwtToken}&id=${user._id}`
-      ),
-    });
+      )
+    );
 
     return res.json({
       success: true,
@@ -231,15 +233,15 @@ module.exports.resetPassword = async (req, res) => {
     user.password = generateHashPassOrToken(password);
     await user.save();
 
-    mailTransport().sendMail({
-      from: "security@email.com",
-      to: user.email,
-      subject: "Reseteo de contraseña exitoso",
-      html: generalEmailTemplate(
+    mailTransport(
+      "Reseteo de contraseña exitoso",
+      `${user.email}`,
+      `${user.firstName} ${user.lastName}`,
+      generalEmailTemplate(
         `Todo está listo ${user.firstName}`,
         "El reseteo de la contraseña fue exitoso, ahora puede iniciar sesión con la nueva contraseña."
-      ),
-    });
+      )
+    );
 
     return res.json({ success: true, msg: "Reseteo de contraseña exitoso" });
   } catch (err) {
@@ -269,12 +271,13 @@ module.exports.lateVerifyEmail = async (req, res) => {
     }
 
     const OTP = generateOTP();
-    mailTransport().sendMail({
-      from: "emailverification@email.com",
-      to: user.email,
-      subject: "Por favor, verifica tu correo electrónico",
-      html: generateSendOTPTemplate(OTP),
-    });
+
+    mailTransport(
+      "Verifica tu correo electrónico",
+      `${user.email}`,
+      `${user.firstName} ${user.lastName}`,
+      generateSendOTPTemplate(OTP)
+    );
 
     //Hacemos un Hash del OTP y lo guardamos en JWT por 10 min
     const hastOTP = await generateHashPassOrToken(OTP);

@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+const SibApiV3Sdk = require("sib-api-v3-sdk");
 
 // otp es one-time-password
 module.exports.generateOTP = () => {
@@ -10,15 +10,39 @@ module.exports.generateOTP = () => {
   return otp;
 };
 
-module.exports.mailTransport = () =>
-  nodemailer.createTransport({
-    host: "smtp.mailtrap.io",
-    port: 2525,
-    auth: {
-      user: process.env.MAILTRAP_USERNAME,
-      pass: process.env.MAILTRAP_PASSWORD,
+module.exports.mailTransport = (subject, receiver, fullName, htmlContent) => {
+  const defaultClient = SibApiV3Sdk.ApiClient.instance;
+  const apiKey = defaultClient.authentications["api-key"];
+  apiKey.apiKey = process.env.SENDINBLUE_API_KEY;
+  const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+  const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+  sendSmtpEmail.subject = subject;
+  sendSmtpEmail.htmlContent = htmlContent;
+  sendSmtpEmail.sender = {
+    name: "Juan Web Tests Galue",
+    email: "juancgalue.tests.web@gmail.com",
+  };
+  sendSmtpEmail.to = [
+    {
+      email: receiver,
+      name: fullName,
     },
-  });
+  ];
+  sendSmtpEmail.replyTo = {
+    name: "Juan Web Tests Galue",
+    email: "juancgalue.tests.web@gmail.com",
+  };
+  apiInstance.sendTransacEmail(sendSmtpEmail).then(
+    function (data) {
+      console.log(
+        "API called successfully. Returned data: " + JSON.stringify(data)
+      );
+    },
+    function (error) {
+      console.error(error);
+    }
+  );
+};
 
 module.exports.generateSendOTPTemplate = (code) => {
   return `
