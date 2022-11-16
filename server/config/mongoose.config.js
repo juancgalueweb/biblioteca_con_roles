@@ -5,5 +5,5 @@ const deploy_db = process.env.MONGO_URI; //To manage DB with MongoDB Atlas
 
 main().catch((err) => console.log(err));
 async function main() {
-  await mongoose.connect(deploy_db);
+  await mongoose.connect(local_db);
 }
