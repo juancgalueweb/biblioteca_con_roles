@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ForgotPassword } from "../components/ForgotPassword";
 import { LateOTPRequest } from "../components/LateOTPRequest";
 import { NavbarMenu } from "../components/NavbarMenu";
@@ -14,46 +14,26 @@ import { UserBooksMain } from "../views/UserBooksMain";
 
 export const AppRoutes = () => {
   return (
-    <Router>
+    <BrowserRouter>
       <NavbarMenu />
-      <Switch>
-        <Route exact path="/login">
-          <LoginRegisterScreen />
-        </Route>
-        <Route exact path="/register">
-          <LoginRegisterScreen />
-        </Route>
-        <Route exact path="/verify-email">
-          <VerifyEmail />
-        </Route>
-        <Route exact path="/forgot-password">
-          <ForgotPassword />
-        </Route>
-        <Route exact path="/reset-password">
-          <ResetPassword />
-        </Route>
-        <Route exact path="/admin/books">
-          <AdminBooksMain />
-        </Route>
-        <Route exact path="/admin/book/new">
-          <AdminNewEditScreen />
-        </Route>
-        <Route exact path="/admin/book/edit/:id">
-          <AdminNewEditScreen />
-        </Route>
-        <Route exact path="/user/books">
-          <UserBooksMain />
-        </Route>
-        <Route exact path="/user/book/:id">
-          <UserBooksContainer />
-        </Route>
-        <Router exact path="/">
-          <HomeScreen />
-        </Router>
-        <Router exact path="/late-validation">
-          <LateOTPRequest />
-        </Router>
-      </Switch>
-    </Router>
+      <Routes>
+        <Route exact path="/login" element={<LoginRegisterScreen />} />
+        <Route exact path="/register" element={<LoginRegisterScreen />} />
+        <Route exact path="/verify-email" element={<VerifyEmail />} />
+        <Route exact path="/forgot-password" element={<ForgotPassword />} />
+        <Route exact path="/reset-password" element={<ResetPassword />} />
+        <Route exact path="/admin/books" element={<AdminBooksMain />} />
+        <Route exact path="/admin/book/new" element={<AdminNewEditScreen />} />
+        <Route
+          exact
+          path="/admin/book/edit/:id"
+          element={<AdminNewEditScreen />}
+        />
+        <Route exact path="/user/books" element={<UserBooksMain />} />
+        <Route exact path="/user/book/:id" element={<UserBooksContainer />} />
+        <Route exact path="/" element={<HomeScreen />} />
+        <Route exact path="/late-validation" element={<LateOTPRequest />} />
+      </Routes>
+    </BrowserRouter>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import "antd/dist/antd.css";
+import { useNavigate } from "react-router-dom";
+import "antd/dist/antd.min.css";
 import {
   Table,
   Image,
@@ -34,7 +34,7 @@ export const UserBooksMain = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
   const [allComments, setAllComments] = useState({});
-  const history = useHistory();
+  const navigate = useNavigate();
 
   //Obtener todos los libros de la base de datos
   const getAllBooks = async () => {
@@ -67,14 +67,14 @@ export const UserBooksMain = () => {
     if (user && user.role === "basic") {
       getAllBooks();
     } else {
-      history.push("/login");
+      navigate("/login");
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogOut = () => {
     setUser(null);
     localStorage.removeItem(KEY);
-    history.push("/login");
+    navigate("/login");
   };
 
   //Columnas de la tabla de Antd
@@ -178,7 +178,7 @@ export const UserBooksMain = () => {
             <EditOutlined
               style={{ color: "#F18F01", marginLeft: 5, fontSize: 18 }}
               onClick={() => {
-                history.push(`/user/book/${record._id}`);
+                navigate(`/user/book/${record._id}`);
               }}
             />
             <WechatOutlined

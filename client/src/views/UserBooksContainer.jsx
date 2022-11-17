@@ -1,17 +1,17 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Button, Row, Col, Spin } from "antd";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { BookEditRC } from "../components/BookEditRC";
 import Swal from "sweetalert2";
 import { axiosWithToken } from "../helpers/axios";
 
 export const UserBooksContainer = () => {
-  const history = useHistory();
   const [loaded, setLoaded] = useState(false);
   const { user, setUser } = useContext(UserContext);
   const [initialData, setInitialData] = useState({});
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const getCRByBook = async () => {
     try {
@@ -45,7 +45,7 @@ export const UserBooksContainer = () => {
         timer: 2000,
       });
       setTimeout(() => {
-        history.push("/user/books");
+        navigate("/user/books");
       }, 2100);
     } catch (err) {
       // console.log("Error al crear comentario/rating", err);
@@ -79,7 +79,7 @@ export const UserBooksContainer = () => {
         timer: 2000,
       });
       setTimeout(() => {
-        history.push("/user/books");
+        navigate("/user/books");
       }, 2100);
     } catch (err) {
       // console.log("Error al modificar el libro", err);
@@ -99,9 +99,9 @@ export const UserBooksContainer = () => {
 
   useEffect(() => {
     if (!user?._id) {
-      history.push("/login");
+      navigate("/login");
     }
-  }, [user, history]);
+  }, [user, navigate]);
 
   useEffect(() => {
     if (user && user.role === "basic") {
@@ -110,14 +110,14 @@ export const UserBooksContainer = () => {
       }, 350);
       return () => clearTimeout(timer);
     } else {
-      history.push("/login");
+      navigate("/login");
     }
   }, [id]); //eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogOut = () => {
     setUser(null);
     localStorage.removeItem("biblioteca-app");
-    history.push("/login");
+    navigate("/login");
   };
 
   const initialValuesAntd = (data) => {
@@ -158,7 +158,7 @@ export const UserBooksContainer = () => {
           <Button
             type="primary"
             className="d-block"
-            onClick={() => history.push("/user/books")}
+            onClick={() => navigate("/user/books")}
           >
             Lista de libros
           </Button>

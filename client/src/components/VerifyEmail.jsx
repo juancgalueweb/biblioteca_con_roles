@@ -6,13 +6,13 @@ import styles from "../scss/VerifyEmail.module.scss";
 import { axiosWithoutToken } from "../helpers/axios";
 import { LoginContext } from "../contexts/LoginContext";
 import Swal from "sweetalert2";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const VerifyEmail = () => {
   const [code, setCode] = useState("");
   const [, setCompleted] = useState(false);
   const { setIsLogin } = useContext(LoginContext);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const storedData = JSON.parse(localStorage.getItem("validateEmail"));
 
@@ -39,7 +39,7 @@ export const VerifyEmail = () => {
         }).then((result) => {
           if (result.isConfirmed) {
             setIsLogin(true);
-            history.push("/login");
+            navigate("/login");
           }
         });
         localStorage.removeItem("validateEmail");
@@ -54,7 +54,7 @@ export const VerifyEmail = () => {
         });
         if (data.jwtError) {
           localStorage.removeItem("validateEmail");
-          history.push("/login");
+          navigate("/login");
         }
       }
     }

@@ -1,19 +1,17 @@
-//TODO: corregir que cuando la clave es igual a la anterior, no te redirija al login
-
 import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Input, Button, Alert, Spin } from "antd";
 import Container from "react-bootstrap/Container";
 import { LockOutlined } from "@ant-design/icons";
 import { axiosWithoutToken } from "../helpers/axios";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import Swal from "sweetalert2";
 
 export const ResetPassword = () => {
   const location = useLocation();
-  const history = useHistory();
   const [invalidUser, setInvalidUser] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const navigate = useNavigate();
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -66,7 +64,7 @@ export const ResetPassword = () => {
           timer: 2400,
         });
         setTimeout(() => {
-          history.push("/login");
+          navigate("/login");
         }, 2500);
       }
     } catch (err) {
@@ -78,7 +76,7 @@ export const ResetPassword = () => {
           confirmButtonText: "Oh no!",
         });
         if (data.jwtError) {
-          history.push("/login");
+          navigate("/login");
         }
       }
     }

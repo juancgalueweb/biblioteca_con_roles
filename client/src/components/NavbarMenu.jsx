@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../contexts/LoginContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,17 +11,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 export const NavbarMenu = () => {
-  const history = useHistory();
   const { setIsLogin } = useContext(LoginContext);
+  const navigate = useNavigate();
 
   const handleRegister = () => {
     setIsLogin(false);
-    history.push("/register");
+    navigate("/register");
   };
 
   const handleLogin = () => {
     setIsLogin(true);
-    history.push("/login");
+    navigate("/login");
   };
 
   return (
@@ -40,11 +40,11 @@ export const NavbarMenu = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link onClick={() => history.push("/")}>
+            <Nav.Link onClick={() => navigate("/")}>
               <FontAwesomeIcon icon={faHome} className="me-2" />
               Home
             </Nav.Link>
-            <Nav.Link onClick={() => history.push("/user/books")}>
+            <Nav.Link onClick={() => navigate("/user/books")}>
               <FontAwesomeIcon icon={faBookOpen} className="me-2" />
               Ver libros
             </Nav.Link>

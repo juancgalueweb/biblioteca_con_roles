@@ -4,12 +4,10 @@ import { UserOutlined } from "@ant-design/icons";
 import Container from "react-bootstrap/Container";
 import Swal from "sweetalert2";
 import { axiosWithoutToken } from "../helpers/axios";
+import { useNavigate } from "react-router-dom";
 
 export const LateOTPRequest = () => {
-  //Tuve que hacerlo de esta manera, porque importando useHistory y usando history.push() no me recargaba la ruta indicada
-  const createBrowserHistory = require("history").createBrowserHistory;
-  const history = createBrowserHistory({ forceRefresh: true });
-
+  const navigate = useNavigate();
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
@@ -49,7 +47,7 @@ export const LateOTPRequest = () => {
         confirmButtonText: "Ok!",
       }).then((result) => {
         if (result.isConfirmed) {
-          history.push("/verify-email");
+          navigate("/verify-email");
         }
       });
     } catch (error) {

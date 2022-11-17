@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Button, Row, Col } from "antd";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AdminNewEditLogic } from "../components/AdminNewEditLogic";
 import Swal from "sweetalert2";
 import { axiosWithToken } from "../helpers/axios";
@@ -19,11 +19,11 @@ export const AdminNewEditScreen = () => {
     bookImageUrl: "",
   };
 
-  const history = useHistory();
   const [loaded, setLoaded] = useState(false);
   const { user, setUser } = useContext(UserContext);
   const [initialData, setInitialData] = useState(startingData);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const getBookById = async () => {
     try {
@@ -62,7 +62,7 @@ export const AdminNewEditScreen = () => {
         timer: 2000,
       });
       setTimeout(() => {
-        history.push("/admin/books");
+        navigate("/admin/books");
       }, 2100);
     } catch (err) {
       // console.log(err.response.data.message);
@@ -97,7 +97,7 @@ export const AdminNewEditScreen = () => {
         timer: 2000,
       });
       setTimeout(() => {
-        history.push("/admin/books");
+        navigate("/admin/books");
       }, 2100);
     } catch (err) {
       // console.log("Error al modificar el libro", err);
@@ -117,9 +117,9 @@ export const AdminNewEditScreen = () => {
 
   useEffect(() => {
     if (!user) {
-      history.push("/login");
+      navigate("/login");
     }
-  }, [user, history]);
+  }, [user, navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,7 +136,7 @@ export const AdminNewEditScreen = () => {
   const handleLogOut = () => {
     setUser(null);
     localStorage.removeItem(KEY);
-    history.push("/login");
+    navigate("/login");
   };
 
   return (
@@ -156,7 +156,7 @@ export const AdminNewEditScreen = () => {
           <Button
             type="primary"
             className="d-block"
-            onClick={() => history.push("/admin/books")}
+            onClick={() => navigate("/admin/books")}
           >
             Lista de libros
           </Button>

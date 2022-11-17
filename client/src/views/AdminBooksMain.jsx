@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import "antd/dist/antd.css";
+import { useNavigate } from "react-router-dom";
+import "antd/dist/antd.min.css";
 import { Table, Image, Badge, Button, Row, Col } from "antd";
 import { axiosWithToken } from "../helpers/axios";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -19,7 +19,7 @@ export const AdminBooksMain = () => {
   const { user, setUser } = useContext(UserContext);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   //Obtener todos los libros de la base de datos
   const getAllBooks = async () => {
@@ -87,14 +87,14 @@ export const AdminBooksMain = () => {
     if (user && user.role === "admin") {
       getAllBooks();
     } else {
-      history.push("/login");
+      navigate("/login");
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogOut = () => {
     setUser(null);
     localStorage.removeItem(KEY);
-    history.push("/login");
+    navigate("/login");
   };
 
   //Columnas de la tabla de Antd
@@ -168,7 +168,7 @@ export const AdminBooksMain = () => {
           <>
             <EditOutlined
               style={{ color: "#F18F01", marginLeft: 5, fontSize: 18 }}
-              onClick={() => history.push(`/admin/book/edit/${record._id}`)}
+              onClick={() => navigate(`/admin/book/edit/${record._id}`)}
             />
             <DeleteOutlined
               style={{ color: "#E63F32", marginLeft: 16, fontSize: 18 }}
@@ -203,7 +203,7 @@ export const AdminBooksMain = () => {
           <Button
             type="primary"
             className="d-block"
-            onClick={() => history.push("/admin/book/new")}
+            onClick={() => navigate("/admin/book/new")}
           >
             Registrar un libro
           </Button>

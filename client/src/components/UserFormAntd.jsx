@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Form, Row, Col, Input, Button, Checkbox, Spin } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { LoginContext } from "../contexts/LoginContext";
@@ -12,6 +12,7 @@ export const UserFormAntd = (props) => {
   const { titleSubmitButton } = props;
   const [askSecret, setAskSecret] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const navigate = useNavigate();
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -44,7 +45,6 @@ export const UserFormAntd = (props) => {
   //Apis de registrar y login
   const { isLogin, setIsLogin } = useContext(LoginContext);
   const { setUser } = useContext(UserContext);
-  const history = useHistory();
   const KEY = "biblioteca-app";
 
   //Registro de usuario
@@ -89,7 +89,7 @@ export const UserFormAntd = (props) => {
         confirmButtonText: "Ok!",
       }).then((result) => {
         if (result.isConfirmed) {
-          history.push("/verify-email");
+          navigate("/verify-email");
         }
       });
       form.resetFields();
@@ -120,9 +120,9 @@ export const UserFormAntd = (props) => {
       });
       setTimeout(() => {
         if (userData.data.role === "admin") {
-          history.push("/admin/books");
+          navigate("/admin/books");
         } else {
-          history.push("/user/books");
+          navigate("/user/books");
         }
       }, 2500);
     } catch (err) {
@@ -138,10 +138,10 @@ export const UserFormAntd = (props) => {
   const handleOnClick = () => {
     if (isLogin) {
       setIsLogin(false);
-      history.push("/register");
+      navigate("/register");
     } else {
       setIsLogin(true);
-      history.push("/login");
+      navigate("/login");
     }
   };
 
