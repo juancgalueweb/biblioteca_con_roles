@@ -4,6 +4,7 @@ import { UserOutlined } from "@ant-design/icons";
 import Container from "react-bootstrap/Container";
 import Swal from "sweetalert2";
 import { axiosWithoutToken } from "../helpers/axios";
+import { useNavigate } from "react-router-dom";
 
 export const ForgotPassword = () => {
   const onFinishFailed = (errorInfo) => {
@@ -20,7 +21,7 @@ export const ForgotPassword = () => {
   };
 
   const [form] = Form.useForm();
-
+  const navigate = useNavigate();
   //Validar correo de usuario que olvidó la contraseña
   const forgotPassword = async (values) => {
     try {
@@ -41,6 +42,10 @@ export const ForgotPassword = () => {
         icon: "error",
         title: `${error?.response?.data?.msg}`,
         confirmButtonText: "Oh no!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
       });
     }
   };
