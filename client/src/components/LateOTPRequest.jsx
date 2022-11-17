@@ -55,6 +55,10 @@ export const LateOTPRequest = () => {
         icon: "error",
         title: `${error?.response?.data?.msg}`,
         confirmButtonText: "Oh no!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
       });
     }
   };

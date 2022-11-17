@@ -347,11 +347,10 @@ export const UserFormAntd = (props) => {
         </Row>
       </Col>
     );
-  } else {
-    return (
-      <Container className="m-3 w-75 mx-auto text-center">
-        <Spin size="large" style={{ marginTop: "100px" }} />
-      </Container>
-    );
   }
+  return (
+    <Container className="m-3 w-75 mx-auto text-center">
+      <Spin size="large" style={{ marginTop: "100px" }} />
+    </Container>
+  );
 };
