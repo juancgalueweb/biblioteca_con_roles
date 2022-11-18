@@ -44,6 +44,7 @@ export const AdminNewEditLogic = ({
                 required: true,
                 message: "Por favor, ingrese el autor del libro",
               },
+              { min: 4, message: "Mínimo 4 caracteres" },
             ]}
           >
             <Input placeholder="J. K. Rowling" />
@@ -58,6 +59,7 @@ export const AdminNewEditLogic = ({
                 required: true,
                 message: "Por favor, ingrese el título del libro",
               },
+              { min: 5, message: "Mínimo 5 caracteres" },
             ]}
           >
             <Input placeholder="Harry Potter y la piedra filosofal" />
