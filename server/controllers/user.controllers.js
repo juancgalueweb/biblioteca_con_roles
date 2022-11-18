@@ -184,24 +184,24 @@ module.exports.forgotPassword = async (req, res) => {
     const jwtToken = await jwtResetPass(user._id);
 
     //For testing
-    mailTransport(
-      "Reseteo de contraseña",
-      `${user.email}`,
-      `${user.firstName} ${user.lastName}`,
-      generatePasswordResetTemplate(
-        `http://localhost:3000/reset-password?token=${jwtToken}&id=${user._id}`
-      )
-    );
-
-    //For production
     // mailTransport(
     //   "Reseteo de contraseña",
     //   `${user.email}`,
     //   `${user.firstName} ${user.lastName}`,
     //   generatePasswordResetTemplate(
-    //     `https://library.juancgalue-web.cl/reset-password?token=${jwtToken}&id=${user._id}`
+    //     `http://localhost:3000/reset-password?token=${jwtToken}&id=${user._id}`
     //   )
     // );
+
+    //For production
+    mailTransport(
+      "Reseteo de contraseña",
+      `${user.email}`,
+      `${user.firstName} ${user.lastName}`,
+      generatePasswordResetTemplate(
+        `https://biblioteca-mern.juancgalue-web.cl/reset-password?token=${jwtToken}&id=${user._id}`
+      )
+    );
 
     return res.json({
       success: true,
