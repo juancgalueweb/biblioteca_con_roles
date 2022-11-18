@@ -8,6 +8,7 @@ import {
   faSignInAlt,
   faHome,
   faBookOpen,
+  faBook,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const NavbarMenu = () => {
@@ -28,13 +29,9 @@ export const NavbarMenu = () => {
     <Navbar bg="light" expand="lg" fixed="top">
       <Container>
         <Navbar.Brand id="brand-text">
-          <img
-            src="/libro-menu.jpeg"
-            alt="Imagen de libro abierto"
-            width="60"
-            height="40"
-            className="d-inline-block align-middle"
-          />{" "}
+          <span style={{ color: "#008080" }}>
+            <FontAwesomeIcon icon={faBook} className="me-3 fa-lg" />
+          </span>
           <b>Biblioteca Virtual</b>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

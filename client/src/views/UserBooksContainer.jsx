@@ -61,13 +61,8 @@ export const UserBooksContainer = () => {
   };
 
   const updateCRById = async (values) => {
-    const dataToAxios = {
-      ...values,
-      user: initialData.cr.user,
-      book: initialData.cr.book,
-    };
     try {
-      await axiosWithToken(`cr/edit/${initialData.cr._id}`, dataToAxios, "PUT");
+      await axiosWithToken(`cr/edit/${initialData.cr._id}`, values, "PUT");
       Swal.fire({
         icon: "success",
         title: "El Comentario/Rating fue modificado",

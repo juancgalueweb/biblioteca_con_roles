@@ -63,7 +63,7 @@ export const HomeScreen = () => {
                 <img
                   src={ele.image ? ele.image : noBookCover}
                   alt={`Imagen del libro ${ele.title}`}
-                  style={{ height: "180px", margin: "0 auto" }}
+                  style={{ height: "250px", margin: "0 auto" }}
                 />
               </li>
               <li style={{ listStyle: "none" }}>

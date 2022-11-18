@@ -4,6 +4,7 @@ import {
   FacebookOutlined,
   LinkedinOutlined,
   TwitterOutlined,
+  GithubOutlined,
 } from "@ant-design/icons";
 
 export const Footer = () => {
@@ -25,18 +26,42 @@ export const Footer = () => {
             <div className="col-md-3 mx-auto mt-0">
               <h6>Síguenos en nuestras redes</h6>
               <p>
-                <a href={"/"}>
+                <a href="/">
                   <TwitterOutlined className="fs-4" />
                 </a>
               </p>
               <p>
-                <a href={"/"}>
+                <a href="/">
                   <FacebookOutlined className="fs-4" />
                 </a>
               </p>
               <p>
-                <a href={"/"}>
+                <a
+                  href="https://www.linkedin.com/in/juancgalue"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <LinkedinOutlined className="fs-4" />
+                </a>
+              </p>
+              <p>
+                <a
+                  href="https://github.com/juancgalueweb"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ textDecoration: "none" }}
+                >
+                  <GithubOutlined className="fs-4" /> @juancgalue
+                </a>
+              </p>
+              <p>
+                <a
+                  href="https://github.com/thamaraRD"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ textDecoration: "none" }}
+                >
+                  <GithubOutlined className="fs-4" /> @thamaraRD
                 </a>
               </p>
             </div>
@@ -44,7 +69,7 @@ export const Footer = () => {
           <hr />
         </div>
         <div className="container text-center">
-          <p>Copyright &copy; 2021</p>
+          <p>Copyright &copy; 2022</p>
         </div>
       </footer>
     </div>
