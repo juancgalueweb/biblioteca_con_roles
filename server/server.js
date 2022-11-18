@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 require("./routes/user.routes")(app);
 require("./routes/books.routes")(app);
 require("./routes/commentsRatings.routes")(app);
+
 //Using the port
 app.listen(process.env.PORT, () =>
   console.log(`CORS-enabled web server listening on port ${process.env.PORT}`)

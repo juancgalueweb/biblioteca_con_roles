@@ -199,9 +199,7 @@ export const UserBooksMain = () => {
     try {
       const data = await axiosWithToken(`cr/book/${record._id}`);
       setAllComments(data.data);
-      console.log("Comentarios por libro", allComments);
     } catch (err) {
-      // console.log("Error al consultar todos los libros", err);
       if (err) {
         Swal.fire({
           icon: "error",
@@ -217,19 +215,19 @@ export const UserBooksMain = () => {
   };
 
   //Modal logic de mostrar comentarios
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = (record) => {
-    setIsModalVisible(true);
+    setIsModalOpen(true);
     getAllCRByBook(record);
   };
 
   const handleOk = () => {
-    setIsModalVisible(false);
+    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setIsModalOpen(false);
   };
 
   return (
@@ -281,7 +279,7 @@ export const UserBooksMain = () => {
       </Row>
       <Modal
         title="Comentarios de los usuarios"
-        visible={isModalVisible}
+        open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
       >

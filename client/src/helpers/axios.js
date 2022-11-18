@@ -16,6 +16,6 @@ export const axiosWithToken = (endpoint, data, method = "GET") => {
     method,
     url,
     data,
-    headers: { "Content-type": "application/json", "x-token": token },
+    headers: { "Content-Type": "application/json", "x-token": token },
   });
 };
